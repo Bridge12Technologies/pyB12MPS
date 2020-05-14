@@ -1,0 +1,676 @@
+import numpy as np
+import socket
+import time
+import os
+import subprocess
+import sys
+from . import serverConfig
+import serial.tools.list_ports
+
+HOST = serverConfig.HOST
+PORT = serverConfig.PORT
+initializeOnStart = serverConfig.initializeOnStart
+
+path = os.path.abspath(__file__)
+dir_path = os.path.dirname(path)
+
+def ampstatus():
+    ''' Query MPS microwave amplifier status
+
+    +---------+----------------------+
+    |lockState|Description           |
+    +=========+======================+
+    |0        |Amplifier Off         |
+    +---------+----------------------+
+    |1        |Amplifier On          |
+    +---------+----------------------+
+    |2        |Amplifier Ext         |
+    +---------+----------------------+
+
+    Returns:
+        ampState (int): Amplifier status of MPS
+    '''
+
+    ampStateString = send_command('ampstatus?',recv = True)
+    ampState = int(ampStateString)
+    return ampState
+
+def amptemp():
+    ''' Query the MPS amplifier temperature
+
+    Returns:
+        ampTemp (float): Amplifier temperature in degrees C
+    '''
+
+    ampTempString = send_command('amptemp?',recv = True)
+    ampTemp = float(ampTempString) / 10.
+    return ampTemp
+
+def close():
+    '''Close serial port
+    '''
+    send_command('_close_')
+
+    print('Closing serial socket...')
+
+    isMPSReady = systemReady()
+    if (isMPSReady != 0):
+        print('Serial socket closed')
+    else:
+        print('Failed to close serial socket')
+
+def debug(debugMode = None):
+    '''Query/Set debug mode of MPS
+
+    Args:
+        debugMode (None, int): If None, query the debug mode. Otherwise set the debug mode.
+
+    Returns:
+        debugMode (int): If query, returns current debug mode of MPS
+    '''
+
+    if debugMode is not None:
+        if debugMode in (0,1):
+            send_command('debug %i'%debugMode)
+        else:
+            raise ValueError('Debug mode must be 0 or 1')
+    else:
+        debugModeString = send_command('debug?', recv = True)
+        debugMode = int(debugModeString)
+        return debugMode
+
+def firmware():
+    '''Query the MPS firmware version
+
+    Returns:
+        firmwareVersion (str): Firmware version
+    '''
+    firmwareVersion = send_command('firmware?',recv = True)
+    return firmwareVersion
+
+def flush():
+    '''Flush the MPS Serial Buffer
+    '''
+    send_command('_flush_')
+
+def freq(freqValue = None):
+    ''' Set/Query Microwave Frequency
+
+    Args:
+        freqValue (int, float): Set Frequency in GHz, by default this parameter is None and the frequency is queried
+
+    Returns:
+        frequency in GHz
+
+    Example::
+
+        microwaveFrequency = freq() # Query Microwave Frequency
+
+        freq(9.4) # Set Microwave Frequency to 9.4 GHz
+
+    '''
+    max_freq = 100.
+    if freqValue is not None:
+        if not isinstance(freqValue,(float,int)):
+            raise ValueError('Frequency value must be an float or int')
+        if (freqValue > max_freq):
+            raise ValueError('Frequency value must be in units of GHz')
+        freqValue = float(freqValue)
+        kHz_freq = freqValue * 1.e6
+        str_freq = '%0.0f'%kHz_freq
+        
+        send_command('freq %s'%str_freq)
+
+    else: # Query the frequency
+        return_kHz_freq = send_command('freq?',recv = True)
+        return_freq = float(return_kHz_freq) / 1.e6 # convert to GHz
+        return return_freq
+
+def id():
+    '''Query the instrument identificationstring of MPS
+
+    Returns:
+        idString (str): ID of instrument
+    '''
+    idString = send_command('id?',recv = True)
+    return idString
+
+def in_waiting():
+    '''Return bytes in MPS serial port
+
+    Returns:
+        value (int): number of bytes at serial port
+    '''
+    value_string = send_command('_in_waiting_',recv = True)
+    value = int(value_string)
+    return value
+
+def listPorts():
+    '''List the serial ports available. This function is for troubleshooting when the serial port of the MPS is unknown.
+
+    Returns:
+        portsAvailable (dict): Dictionary of Serial Ports. Key is serial port. Value is description.
+
+    Example::
+
+        portsAvailable = listPorts() # Return Dictionary of Serial Ports Available
+    '''
+
+    portsAvailable = {}
+    ports = list(serial.tools.list_ports.comports())
+    for p in ports:
+        print('*'*50)
+        print('serial port: ' + str(p.device))
+        print('description: ' + str(p.description))
+        portsAvailable[p.device] = p.description
+    print('*'*50)
+    return portsAvailable
+
+def lockstatus(lockState = None,verifyOperateMode = True):
+    '''Set/Query the frequency lock, must be performed in operate mode
+
+    +---------+----------------------+
+    |lockState|Description           |
+    +=========+======================+
+    |0        |Disable Frequency Lock|
+    +---------+----------------------+
+    |1        |Enable Frequency Lock |
+    +---------+----------------------+
+
+    Args:
+        lockState (None, int): if lockState is not None, sets the lock state
+        verifyOperateMode (bool): If True, verifies that the operate mode is enabled before setting the lock state
+
+    Warning:
+        The frequency lock can only be enabled in operate mode (screen() returns 1).
+
+    Returns:
+        lockState (int): Frequency lock state of MPS
+        
+
+    Example::
+
+        lockState = lockstatus() # Query the Frequency Lock Status
+
+        lockstatus(0) # Diable Frequency Lock
+        lockstatus(1) # Enable Frequency Lock
+
+    '''
+    if lockState is not None:
+        if lockState in (0,1):
+            if verifyOperateMode:
+                #Check for operate mode with 
+                screenState = screen()
+                if screenState != 1:
+                    raise ValueError('Screen State Must be Operate Mode for Lock Mode')
+                rfState = rfstatus()
+                if rfState != 1:
+                    raise ValueError('RF Output Must be enabled for lock Mode')
+            send_command('lockstatus %i'%lockState)
+
+        else:
+            raise ValueError('Lock State Not Valid')
+    else:
+        lockStateString = send_command('lockstatus?', recv = True)
+        lockState = int(lockStateString)
+        return lockState
+
+
+def lockdelay(delay = None):
+    '''Set/Query lock delay in ms
+
+    Args:
+        delay (None, int, float): Frequency lock delay in ms
+
+    Returns:
+        delayReading (int): If delay is None, returns lock delay value
+
+    Example::
+
+        delay = lockdelay() # Query the Frequency Lock Delay in ms
+
+        lockdelay(100) # Set the Frequency Lock Delay to 100 ms
+
+    '''
+    minDelay = 100.
+    maxDelay = 500.
+
+    if delay is not None:
+        if isinstance(delay,(int,float)):
+            if (delay < minDelay) or (delay > maxDelay):
+                delay = int(delay)
+                send_command('lockdelay %i'%delay)
+            else:
+                raise ValueError('Lock delay must be greater than %i and less than %i ms'%(minDelay,maxDelay))
+        else:
+            raise ValueError('Lock delay must be int or float')
+    else:
+        lockReadingString = send_command('lockdelay?',recv = True)
+        lockReading = int(lockReadingString)
+        return lockReading
+
+def lockstep(step = None):
+    '''Set/Query Lock frequency step in kHz
+
+    Args:
+        step (None, int, float): Frequency lock step in kHz
+
+    Returns:
+        stepReading (int): If step is None, returns current lock step value in kHz
+
+    Example::
+
+        step = lockstep() # Query the Lock Frequency Step in kHz
+
+        lockstep(20) # Set the Frequency Lock Step to 20 kHz
+
+    '''
+    minStep = 10.
+    maxStep = 200.
+    if step is not None:
+        if isinstance(step,(int,float)):
+            if (step < minStep) or (step > maxStep):
+                step = int(step)
+                send_command('lockstep %i'%step)
+
+            else:
+                raise ValueError('Frequency step must be greater than %i minStep and less than %i maxStep kHz'%(minStep,maxStep))
+        else:
+            raise ValueError('Frequency step must be float or integer')
+    else:
+        stepReadingString = send_command('lockstep?',recv = True)
+        stepReading = int(stepReadingString)
+
+        return stepReading
+
+def open():
+    '''Initialize MPS serial port connection
+    '''
+    send_command('_init_')
+
+    isMPSReady = systemReady()
+
+    if (isMPSReady == 1):
+        print('System Ready')
+    else:
+        print('System failed to start')
+
+def power(powerValue = None):
+    '''Set/Query Microwave Power
+
+    Args:
+        powerValue (None, int, float): Set Power in dBm, by default this parameter is None and the power is queried
+
+    Returns:
+        powerValue (float): Microwave power in dBm 
+
+    Example::
+
+        powerValue = power() # Query Microwave Power
+
+        power(10) # Set microwave power to 10 dBm
+
+    '''
+    if powerValue is not None:
+        if not isinstance(powerValue,(float,int)):
+            raise ValueError('Power value must be an float or int')
+        powerValue = float(powerValue)
+        tenth_dB_power = powerValue * 10.
+        str_power = '%0.0f'%tenth_dB_power
+        
+        send_command('power %s'%str_power)
+
+    else: # Query the power
+        return_tenth_dB_power = send_command('power?',recv = True)
+        return_power = float(return_tenth_dB_power) / 10. # convert to dBm
+        return return_power
+
+def rfstatus(rfState = None,verifyWaveguideStatus = True):
+    ''' Set/Query the RF status
+
+    +-------+---------------------------------+
+    |rfState|Description                      |
+    +=======+=================================+
+    |0      |Disable RF Output                |
+    +-------+---------------------------------+
+    |1      |Enable RF Output                 |
+    +-------+---------------------------------+
+    |2      |External Trigger Microwave Output|
+    +-------+---------------------------------+
+    
+    Args:
+        rfState (None, int): RF Status value
+        verifyWaveguideStatus (bool): Check if waveguide status is Enabled (True by default).
+
+    Returns:
+        rfStateReading (int): If rfStatus is not None, returns queried RF status
+
+    Warning:
+        The microwave output (rfstatus(1)) can only be enabled if the waveguide switch is set to DNP mode (wgstatus() returns 1).
+        
+
+    Example::
+
+        rfState = rfstatus() # Query the RF State
+
+        rfstatus(0) # Disable Microwave Output
+        rfstatus(1) # Enable Microwave Output
+        rfstatus(2) # Enable External Trigger of Microwave Output
+
+    '''
+    if rfState is not None:
+        if rfState in (0,1,2):
+            if verifyWaveguideStatus:
+                waveguideState = wgstatus()
+                if waveguideState == 1:
+                    send_command('rfstatus %i'%rfState)
+                else:
+                    raise ValueError('Waveguide Switch is Disabled (EPR Mode)')
+            else:
+                send_command('rfstatus %i'%rfState)
+        else:
+            raise ValueError('RF Status Not Valid')
+    else:
+        rfStateReadingString = send_command('rfstatus?',recv = True)
+        rfStateReading = int(rfStateReadingString)
+        return rfStateReading
+
+def rxdiodesn():
+    '''Query serial number of Rx diode
+
+    Returns:
+        serialNumberRx (str): Serial number string of Rx diode
+    '''
+    serialNumberRx = send_command('rxdiodesn?',recv = True)
+    return serialNumberRx
+
+def rxpowerdbm():
+    '''Query the Rx diode reading in dBm
+
+    Returns:
+        rxPower (float): Reciever monitor power reading in dBm
+
+    Example::
+
+        rxPower = rxpowerdbm() # Query Rx diode power reading
+
+    '''
+    return_tenth_rx_dbm = send_command('rxpowerdbm?',recv = True)
+    rxPower = float(return_tenth_rx_dbm) / 10. # convert to dBm
+    return rxPower
+
+def rxpowermv():
+    '''Query the Rx diode reading in mV
+
+    Returns:
+        rxVoltage (float): Receiver monitor voltage reading in mV
+
+    Example::
+
+        rxVoltage = rxpowermv() # Query Rx diode voltage
+
+    '''
+    return_tenth_rx_mv = send_command('rxpowermv?',recv = True)
+    rxVoltage = float(return_tenth_rx_mv) / 10. # convert to mV
+    return rxVoltage
+
+def screen(screenState = None):
+    '''Set/Query Screen Status
+
+    +-----------+---------------+
+    |screenState|Description    |
+    +===========+===============+
+    |0          |Main Screen    |
+    +-----------+---------------+
+    |1          |Tune Screen    |
+    +-----------+---------------+
+    |2          |Advanced Screen|
+    +-----------+---------------+
+
+    Args:
+        screenState (None, int): If screenState is not None, sets the screen state
+
+    Returns:
+        screenStateReading (int): If screenState is None, returns the screen state
+
+    Example::
+
+        screenState = screen() # Query the Screen Status
+
+        screen(0) # Set Screen to Main Screen
+        screen(1) # Set Screen to Tune Screen
+        screen(2) # Set Screen to Advanced Screen
+
+    '''
+
+    if screenState is not None:
+        if screenState in (0,1,2):
+            send_command('screenstatus %i'%screenState)
+        else:
+            raise ValueError('Screen Status is not Valid')
+    else:
+        screenStateReadingString = send_command('screenstatus?',recv = True)
+        screenStateReading = int(screenStateReadingString)
+        return screenStateReading
+
+def send_command(command,recv = False):
+    '''Send string command to python MPS server
+
+    Args:
+        command (str): string command to be sent to MPS Server
+        recv (bool): True if serial port should be read after writing. False by default.
+
+    Returns:
+        recv_string (str): if recv = True, returns string received from MPS Server
+
+    Example::
+
+        send_command('freq 9300000') # Set Frequency to 9.3 GHz
+
+        freqStringkHz = send_command('freq?',recv = True) # Query the microwave frequency in kHz
+        freqValue = float(freqStringkHz) / 1.e6 # Convert frequency string float in units of GHz
+
+        send_command('_stop_') # Stop the python server
+
+    '''
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((HOST,PORT))
+
+    send_string = '%s\n'%command
+
+    # specify string as utf-8
+    send_bytes = send_string.encode('utf-8')
+
+    # send bytes to server
+    s.sendall(send_bytes)
+
+    if recv:
+        recv_bytes = s.recv(1024)
+        recv_string = recv_bytes.decode('utf-8')
+        recv_string = recv_string.rstrip()
+
+        s.close()
+
+        return recv_string
+    else:
+        s.close()
+
+def serialNumber():
+    '''Query serial number of MPS
+
+    Returns:
+        serialNumber (str): Serial number string of MPS
+    '''
+    serialNumberString = send_command('serial?',recv = True)
+    return serialNumberString
+
+def start(serialPort = None):
+    '''Start python TCP server
+
+    Args:
+        serialPort (None, str): If given, serial port to establish MPS connection.
+
+    Example::
+
+        start() # Start python server with automatically detected serial port or default serial port (defined in configuration file)
+
+        start('COM5') # Start python server using "COM5" as serial port
+    '''
+
+    serverScriptFilename = 'pyB12MPS_server.py'
+    serverScriptDir = os.path.join(dir_path,serverScriptFilename)
+
+    if serialPort is None:
+        p = subprocess.Popen([sys.executable, serverScriptDir], 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.STDOUT)
+    else:
+        p = subprocess.Popen([sys.executable, serverScriptDir, serialPort], 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.STDOUT)
+
+    print('Server starting...')
+
+    serverErrorIndicator = test()
+    errorCounter = 0
+
+    while (serverErrorIndicator != 0):
+        time.sleep(0.1)
+        serverErrorIndicator = test()
+        errorCounter += 1
+
+        if (errorCounter >= 50):
+            print('Failed to start server.')
+            break
+
+    if serverErrorIndicator == 0:
+        print('Server started.')
+
+    print('MPS initializing...')
+
+    ### Check for MPS Initialization ###
+    if initializeOnStart:
+        open()
+
+def stop():
+    '''Stop python server 
+    '''
+    send_command('_stop_')
+
+    serverErrorIndicator = test()
+    errorCounter = 0
+
+    while (serverErrorIndicator == 0):
+        time.sleep(0.1)
+        serverErrorIndicator = test()
+        errorCounter += 1
+
+        if (errorCounter >= 50):
+            print('Failed to stop server.')
+            break
+
+    if serverErrorIndicator != 0:
+        print('Server stopped.')
+
+def systemReady():
+    '''Query python server for initialized status of MPS
+
+    +-----------+--------------------------------------+
+    |isMPSReady |Description                           |
+    +===========+======================================+
+    |0          |MPS Serial Connection Not Initialized |
+    +-----------+--------------------------------------+
+    |1          |MPS Serial Connection Initialized     |
+    +-----------+--------------------------------------+
+    
+    Returns:
+        isMPSReady (int): RF Status value
+    '''
+    isMPSReady = send_command('_is_system_ready_',recv = True)
+    isMPSReady = int(isMPSReady.rstrip())
+    return isMPSReady
+
+def test():
+    '''Test Server Connection
+
+    Returns:
+        serverErrorIndicator: A value of zero (0) indicates normal operation of the server. Any other value indicates a server error.
+    '''
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serverErrorIndicator = s.connect_ex((HOST,PORT))
+    s.close()
+    return serverErrorIndicator
+
+def txdiodesn():
+    '''Query serial number of Tx diode
+    
+    Returns:
+        serialNumberTx (str): Serial number string of Tx diode
+    '''
+    serialNumberTx = send_command('txdiodesn?',recv = True)
+    return serialNumberTx
+
+def txpowerdbm():
+    ''' Returns transmitter power monitor in dBm
+
+    Returns:
+        txPower (float): Transmitter power monitor voltage in dBm
+
+    Example::
+
+        txPower = txpowerdbm() # Query Tx diode power reading
+
+    '''
+    return_tenth_tx_dbm = send_command('txpowerdbm?',recv = True)
+    txPower = float(return_tenth_tx_dbm) / 10. # convert to dBm
+    return txPower
+
+def txpowermv():
+    ''' Returns transmitter power monitor in mV
+
+    Returns:
+        txVoltage (float): Transmitter power monitor voltage in mV
+
+    Example::
+
+        txVoltage = txpowermv() # Query Tx diode voltage
+
+    '''
+    return_tenth_tx_mv = send_command('txpowermv?',recv = True)
+    txVoltage = float(return_tenth_tx_mv) / 10. # convert to mV
+    return txVoltage
+
+def wgstatus(wgStatus = None):
+    ''' Set/Query the waveguide switch (wg) status
+
+    +--------+-----------------------------------+
+    |wgStatus|Description                        |
+    +========+===================================+
+    |0       |Disable Waveguide Switch (EPR Mode)|
+    +--------+-----------------------------------+
+    |1       |Enable Waveguide Switch (DNP Mode) |
+    +--------+-----------------------------------+
+
+    Args:
+        wgStatus (None, int): wg status value
+
+    Returns:
+        wgStatusReading (int): If wgStatus is not None, returns queried wg status
+
+    Example::
+
+        wgState = wgstatus() # Query the Waveguide State
+
+        wgstatus(0) # Switch to EPR Mode
+        wgstatus(1) # Switch to DNP Mode
+
+    '''
+    if wgStatus is not None:
+        if wgStatus in (0,1):
+            send_command('wgstatus %i'%wgStatus)
+        else:
+            raise ValueError('WG Status Not Valid')
+    else:
+        wgStatusReadingString = send_command('wgstatus?',recv = True)
+        wgStatusReading = int(wgStatusReadingString)
+        return wgStatusReading
