@@ -10,11 +10,38 @@ import serial.tools.list_ports
 HOST = serverConfig.HOST
 PORT = serverConfig.PORT
 initializeOnStart = serverConfig.initializeOnStart
+defaultSerialPort = serverConfig.defaultSerialPort
+serialDelay = serverConfig.serialDelay
+
+autoDetectSerialPort = serverConfig.autoDetectSerialPort
+systemReadyString = serverConfig.systemReadyString
+
 
 path = os.path.abspath(__file__)
 dir_path = os.path.dirname(path)
 
-def ampstatus():
+def ampgain(gain = None):
+    '''Advanced feature to adjust gain for calibration of MPS
+
+    Args:
+        gain (None, float, int): Amplifier gain in dBm
+
+    Returns:
+        float: if gain is None, returns the current amplifier gain value in dBm
+    '''
+
+    if gain is not None:
+        gain = gain * 10
+        gainString = str(int(gain))
+        send_command('ampgain %s'%gainString)
+
+    else:
+        gainString = send_command('ampgain?', recv = True)
+        gain = float(gainString) / 10.
+
+        return gain
+
+def ampstatus(ampState = None):
     ''' Query MPS microwave amplifier status
 
     +---------+----------------------+
@@ -31,9 +58,17 @@ def ampstatus():
         ampState (int): Amplifier status of MPS
     '''
 
-    ampStateString = send_command('ampstatus?',recv = True)
-    ampState = int(ampStateString)
-    return ampState
+    if ampState is not None:
+        if ampState not in (0,1,2):
+            raise ValueError('Invalid Amplifier State. Must be 0, 1, 2')
+        ampState = int(ampState)
+
+        ampStateString = str(ampState)
+        send_command('ampstatus %s'%ampStateString)
+    else:
+        ampStateString = send_command('ampstatus?',recv = True)
+        ampState = int(ampStateString)
+        return ampState
 
 def amptemp():
     ''' Query the MPS amplifier temperature
@@ -45,6 +80,7 @@ def amptemp():
     ampTempString = send_command('amptemp?',recv = True)
     ampTemp = float(ampTempString) / 10.
     return ampTemp
+
 
 def close():
     '''Close serial port
@@ -78,6 +114,29 @@ def debug(debugMode = None):
         debugModeString = send_command('debug?', recv = True)
         debugMode = int(debugModeString)
         return debugMode
+
+def detectArduinoSerialPort():
+    '''Return the serial port for the Arduino
+
+    Returns:
+        str: Arduino serial port. If Arduino serial port is not found, uses the default serial port.
+    '''
+
+    print('Automatically Detecting Serial Port...')
+    ports = list(serial.tools.list_ports.comports())
+    arduinoDetected = False
+    for p in ports:
+        print(p)
+        if 'Arduino' in p.description:
+            arduinoDetected = True
+            arduinoPort = p.device
+            print('MPS Detected on port %s'%(arduinoPort))
+    if arduinoDetected:
+        serialPort = arduinoPort
+    else:
+        print('No MPS automatically detected. Trying %s instead (default COM port)'%(defaultSerialPort))
+        serialPort = defaultSerialPort 
+    return serialPort
 
 def firmware():
     '''Query the MPS firmware version
@@ -130,7 +189,7 @@ def id():
     '''Query the instrument identificationstring of MPS
 
     Returns:
-        idString (str): ID of instrument
+        idString (str): ID of instrument: "Bridge12 MPS"
     '''
     idString = send_command('id?',recv = True)
     return idString
@@ -186,7 +245,6 @@ def lockstatus(lockState = None,verifyOperateMode = True):
 
     Returns:
         lockState (int): Frequency lock state of MPS
-        
 
     Example::
 
@@ -201,7 +259,7 @@ def lockstatus(lockState = None,verifyOperateMode = True):
             if verifyOperateMode:
                 #Check for operate mode with 
                 screenState = screen()
-                if screenState != 1:
+                if screenState != 2:
                     raise ValueError('Screen State Must be Operate Mode for Lock Mode')
                 rfState = rfstatus()
                 if rfState != 1:
@@ -237,7 +295,7 @@ def lockdelay(delay = None):
 
     if delay is not None:
         if isinstance(delay,(int,float)):
-            if (delay < minDelay) or (delay > maxDelay):
+            if (delay >= minDelay) and (delay <= maxDelay):
                 delay = int(delay)
                 send_command('lockdelay %i'%delay)
             else:
@@ -266,13 +324,12 @@ def lockstep(step = None):
 
     '''
     minStep = 10.
-    maxStep = 200.
+    maxStep = 50.
     if step is not None:
         if isinstance(step,(int,float)):
-            if (step < minStep) or (step > maxStep):
+            if (step >= minStep) and (step <= maxStep):
                 step = int(step)
                 send_command('lockstep %i'%step)
-
             else:
                 raise ValueError('Frequency step must be greater than %i minStep and less than %i maxStep kHz'%(minStep,maxStep))
         else:
@@ -375,6 +432,179 @@ def rfstatus(rfState = None,verifyWaveguideStatus = True):
         rfStateReading = int(rfStateReadingString)
         return rfStateReading
 
+def rfsweepdata():
+    '''Get data from RF sweep
+
+    Returns:
+        numpy.array: Tuning curve from previous rf sweep
+
+    Example::
+
+        data = mps.rfsweepdata()
+
+    '''
+
+    returnDataRfSweep = send_command('rfsweepdata?',recv = True)
+    returnDataRfSweep = returnDataRfSweep.rstrip()
+    returnDataRfSweep = np.fromstring(returnDataRfSweep,sep=',')
+    returnValues = returnDataRfSweep.astype(int)
+
+    return returnValues
+
+def rfsweepdosweep():
+    '''Start single RF Sweep.
+
+    Example::
+
+        mps.rfsweepdosweep()
+
+    '''
+
+    send_command('rfsweepdosweep?')
+
+def rfsweeppower(tunePower = None):
+    '''Set/Query Power for RF Sweep
+
+    Args:
+        tunePower (None, float, int): If not None, sets the rf sweep power to this value in dBm. Otherwise queries the current rf sweep power.
+
+    Returns:
+        float: If tunePower argument is None, the current rf sweep power.
+
+    Example::
+        
+        mps.rfsweeppower(15) # set rf sweep power to 15 dBm
+        tunePower = mps.rfsweepPower()
+
+    '''
+
+    if tunePower is not None:
+        if not isinstance(tunePower,(int,float)):
+            raise ValueError('Value must be an int or float')
+        tunePower = tunePower * 10
+        tunePowerString = str(int(tunePower))
+        send_command('rfsweeppower %s'%tunePowerString)
+    else:
+        tunePowerString = send_command('rfsweeppower?', recv = True)
+        tunePower = float(tunePowerString) / 10.
+
+        return tunePower
+
+def rfsweepnpts(rfSweepNptsValue = None):
+    ''' Set/query number of points in RF sweep
+
+    Args:
+        rfsweepnpts(int): Set number of points in RF sweep. If empty, number of points is queried
+
+    Returns:
+        int: If rfSweepNptsValue argument is None, the number of point in the rf sweep
+
+    Example::
+        
+        pts = rfsweepnpts() # query the number of points in rf sweep
+        rfsweepnpts(100) # set the number of points in rf sweep to 100
+
+    '''
+    if rfSweepNptsValue is not None:
+        if not isinstance(rfSweepNptsValue,int):
+            raise ValueError('Value must be an int')
+        send_command('rfsweepnpts %s'%rfSweepNptsValue)
+    else: # Query
+        returnRfSweepNpts = send_command('rfsweepnpts?',recv = True)
+        returnRfSweepNpts = int(returnRfSweepNpts)
+        return returnRfSweepNpts
+
+def rfsweepdwelltime(dwellTime = None):
+    '''Rf sweep dwell time in us
+
+    Args:
+        dwellTime: If dwellTime is not None, value to set the RF sweep dwell time in us
+
+    Returns:
+        float: If dwellTime is None, the current value of the rf sweep dwell time in us.
+
+    Example::
+
+        rfsweepdwelltime(50) # set rf sweep dwell time to 50 us
+        dwellTime = rfsweepdwelltime() # Query the rf sweep dwell time
+
+    '''
+
+    if dwellTime is not None:
+        if not isinstance(dwellTime,(int,float)):
+            raise ValueError('Value must be an int')
+        dwellTimeString = str(dwellTime)
+        send_command('rfsweepdwelltime %s'%dwellTimeString)
+    else:
+        dwellTimeString = send_command('rfsweepdwelltime?', recv = True)
+        dwellTime = float(dwellTimeString)
+
+        return dwellTime
+
+def rfsweepinitialdwelltime(dwellTime = None):
+    '''Rf sweep dwell time in ms for first point
+
+    Args:
+        dwellTime: If dwellTime is not None, value to set the RF sweep dwell time for the first point in ms
+
+    Returns:
+        float: If dwellTime is None, the current value of the RF sweep dwell time for the first point in ms.
+
+    Example::
+
+        mps.rfsweepinitialdwelltime(100) # Set the dwell time for the first point to 100 ms
+        dwellTime = mps.rfsweepinitialdwelltime() # Query the dwell time for the first point in ms
+
+    '''
+
+    if dwellTime is not None:
+        if not isinstance(dwellTime,(int,float)):
+            raise ValueError('Value must be an int')
+        dwellTimeString = str(dwellTime)
+        send_command('rfsweepinitialdwelltime %s'%dwellTimeString)
+    else:
+        dwellTimeString = send_command('rfsweepinitialdwelltime?', recv = True)
+        dwellTime = float(dwellTimeString)
+
+        return dwellTime
+
+def rfsweepsw(rfSweepSwValue = None):
+    ''' Set/query predefined RF sweep width (MHs)
+
+    +-----------+----------------------------+
+    | rfsweepsw | Value                      |
+    +===========+============================+
+    | 0         | 250 MHz                    |
+    +-----------+----------------------------+
+    | 1         | 100 MHz                    |
+    +-----------+----------------------------+
+    | 2         | 50 MHz                     |
+    +-----------+----------------------------+
+    | 3         | 10 MHz                     |
+    +-----------+----------------------------+
+
+    Args:
+        rfsweepsw(int): rfsweepsw variable which determines the rf sweep width. If None, number of points is queried
+
+    Returns:
+        int: rf sweep width
+
+    Example::
+
+        mps.rfsweepsw(0) # set rf sweep width to 250 MHz
+        sweepWidth = mps.rfsweepsw() # Query current rf sweep width
+
+    '''
+
+    if rfSweepSwValue is not None:
+        if not isinstance(rfSweepSwValue,int):
+            raise ValueError('Value must be an int')
+        send_command('rfsweepsw %s'%rfSweepSwValue)
+    else: # Query
+        returnRfSweepSw = send_command('rfsweepsw?',recv = True)
+        returnRfSweepSw = int(returnRfSweepSw)
+        return returnRfSweepSw
+
 def rxdiodesn():
     '''Query serial number of Rx diode
 
@@ -417,15 +647,17 @@ def rxpowermv():
 def screen(screenState = None):
     '''Set/Query Screen Status
 
-    +-----------+---------------+
-    |screenState|Description    |
-    +===========+===============+
-    |0          |Main Screen    |
-    +-----------+---------------+
-    |1          |Tune Screen    |
-    +-----------+---------------+
-    |2          |Advanced Screen|
-    +-----------+---------------+
+    +--------------+----------------+
+    | screen       | Description    |
+    +==============+================+
+    | 0            | Main Screen    |
+    +--------------+----------------+
+    | 1            | Operate Screen |
+    +--------------+----------------+
+    | 2            | Sweep Screen   |
+    +--------------+----------------+
+    | 3            | Advanced Screen|
+    +--------------+----------------+
 
     Args:
         screenState (None, int): If screenState is not None, sets the screen state
@@ -437,19 +669,20 @@ def screen(screenState = None):
 
         screenState = screen() # Query the Screen Status
 
-        screen(0) # Set Screen to Main Screen
-        screen(1) # Set Screen to Tune Screen
-        screen(2) # Set Screen to Advanced Screen
+        screenstatus(0) # Set Screen to Main Screen
+        screenstatus(1) # Set Screen to Operate Screen
+        screenstatus(2) # Set Screen to Sweep Screen
+        screenstatus(3) # Set Screen to Advanced Screen
 
     '''
 
     if screenState is not None:
         if screenState in (0,1,2):
-            send_command('screenstatus %i'%screenState)
+            send_command('screen %i'%screenState)
         else:
             raise ValueError('Screen Status is not Valid')
     else:
-        screenStateReadingString = send_command('screenstatus?',recv = True)
+        screenStateReadingString = send_command('screen?',recv = True)
         screenStateReading = int(screenStateReadingString)
         return screenStateReading
 
@@ -483,6 +716,9 @@ def send_command(command,recv = False):
 
     # send bytes to server
     s.sendall(send_bytes)
+
+    # serial delay
+    time.sleep(serialDelay)
 
     if recv:
         recv_bytes = s.recv(1024)
@@ -590,6 +826,61 @@ def systemReady():
     isMPSReady = int(isMPSReady.rstrip())
     return isMPSReady
 
+def systemstatus():
+    '''Returns dictionary of MPS status
+
+    +--------------------------------------+
+    |Keys                                  |
+    +======================================+
+    |freq                                  |
+    +--------------------------------------+
+    |power                                 |
+    +--------------------------------------+
+    |rxpowermv                             |
+    +--------------------------------------+
+    |txpowermv                             |
+    +--------------------------------------+
+    |rfstatus                              |
+    +--------------------------------------+
+    |wgstatus                              |
+    +--------------------------------------+
+    |ampstatus                             |
+    +--------------------------------------+
+    |amptemp                               |
+    +--------------------------------------+
+    |lockstatus                            |
+    +--------------------------------------+
+    |screen                                |
+    +--------------------------------------+
+
+
+    Returns:
+        dict: dictionary of system status variables
+    '''
+    systemStatusString = send_command('systemstatus?',recv = True)
+
+    systemStatusList = systemStatusString.rstrip().split(',')
+
+    systemStatusDict = {}
+
+    for statusInfo in systemStatusList:
+        key, value = tuple(statusInfo.split(':'))
+
+        systemStatusDict[key] = value
+
+    systemStatusDict['freq'] = float(systemStatusDict['freq']) / 1.e6
+    systemStatusDict['power'] = float(systemStatusDict['power']) / 10.
+    systemStatusDict['rxpowermv'] = float(systemStatusDict['rxpowermv']) / 10.
+    systemStatusDict['txpowermv'] = float(systemStatusDict['txpowermv']) / 10.
+    systemStatusDict['rfstatus'] = int(systemStatusDict['rfstatus'])
+    systemStatusDict['wgstatus'] = int(systemStatusDict['wgstatus'])
+    systemStatusDict['ampstatus'] = int(systemStatusDict['ampstatus'])
+    systemStatusDict['amptemp'] = float(systemStatusDict['amptemp']) / 10.
+    systemStatusDict['lockstatus'] = int(systemStatusDict['lockstatus'])
+    systemStatusDict['screen'] = int(systemStatusDict['screen'])
+
+    return systemStatusDict
+
 def test():
     '''Test Server Connection
 
@@ -674,3 +965,6 @@ def wgstatus(wgStatus = None):
         wgStatusReadingString = send_command('wgstatus?',recv = True)
         wgStatusReading = int(wgStatusReadingString)
         return wgStatusReading
+
+if __name__ == '__main__':
+    pass

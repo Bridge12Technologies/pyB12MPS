@@ -93,15 +93,15 @@ In a terminal start the server by running:
 
 .. code-block:: console
     
-    python B12MPS_server.py
+    python pyB12MPS_server.py
 
-Make sure you are in the same directory as the B12MPS_server.py file. In this directory, you will also find a serverConfig.py file. The serverConfig.py file contains the IP and PORT information for the server as well as other initialization information. If the "autoDetectSerialPort" variable in the serverConfig.py file is set to True, the script will automatically detect the serial port the MPS is connected to and start the python server.
+Make sure you are in the same directory as the pyB12MPS_server.py file. In this directory, you will also find a serverConfig.py file. The serverConfig.py file contains the IP and PORT information for the server as well as other initialization information. If the "autoDetectSerialPort" variable in the serverConfig.py file is set to True, the script will automatically detect the serial port the MPS is connected to and start the python server.
 
 Alternatively, you can specify the serial port by giving this as an argument. In this case, the automatic detection of the serial port will be overridden. For example to specify com port 3 (COM3):
 
 .. code-block:: console
     
-    python B12MPS_server.py COM3
+    python pyB12MPS_server.py COM3
 
 Once the connection has been established, you can use the client script to send commands to the MPS.
 
@@ -114,7 +114,7 @@ To set the frequency to 9.4 GHz:
 
 .. code-block:: python
 
-    import B12MPS as mps
+    import pyB12MPS as mps
 
     mps.freq(9.4)
 
@@ -122,7 +122,7 @@ To set the microwave power to 10 dBm:
 
 .. code-block:: python
 
-    import B12MPS as mps
+    import pyB12MPS as mps
 
     mps.power(10)
 
@@ -131,7 +131,7 @@ Example - Reading Diode Voltage
 
 .. code-block:: python
 
-    import B12MPS as mps
+    import pyB12MPS as mps
     import time
 
     # Number of points to acquire

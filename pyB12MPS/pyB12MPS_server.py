@@ -39,8 +39,7 @@ if numArguments > 0:
     argumentSerialPort = sys.argv[1]
     print('Received Serial Port Argument: %s'%argumentSerialPort)
 
-system_ready_string = 'Synthesizer detected'
-#system_ready_string = 'System Ready'
+systemReadyString = serverConfig.systemReadyString
 
 class MPSTCPServer(SocketServer.TCPServer):
     '''Server for MPS Communication
@@ -91,10 +90,11 @@ class MPSTCPServer(SocketServer.TCPServer):
                 read_bytes = self.ser.readline()
                 read_string = read_bytes.decode('utf-8').rstrip()
                 print(read_string)
-                if read_string == system_ready_string:
+                if read_string == systemReadyString:
                     self.is_system_ready = True
-            systemReadyString = 'MPS Server System Ready\n' # must be different from anything MPS sends through serial port on initlaization
-            systemReadyBytes = systemReadyString.encode('utf-8')
+        time.sleep(0.1)
+        self.ser.reset_input_buffer()
+        self.ser.reset_output_buffer()
 
 
     def closeMPS(self):

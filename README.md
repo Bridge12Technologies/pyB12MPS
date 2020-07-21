@@ -4,7 +4,7 @@
 
 pyB12MPS is a python package for interfacing with Bridge12 MPS.
 
-The complete online documentation for the Bridg12 MPS is available [here](http://mps.bridge12.com).
+The complete online documentation for the Bridge12 MPS is available [here](http://mps.bridge12.com).
 
 The complete online documentation for pyB12MPS is available [here](http://pyb12mps.bridge12.com).
 
