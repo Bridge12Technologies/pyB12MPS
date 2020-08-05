@@ -5,7 +5,7 @@ with open('README.md','r') as f:
 
 setuptools.setup(
     name='pyB12MPS',
-    version='1.0.7',
+    version='1.0.8',
     author='Bridge12 Technologies, Inc',
     author_email='tkeller@bridge12.com',
     description='A Python Package for Interfacing with the Bridge12 MPS',

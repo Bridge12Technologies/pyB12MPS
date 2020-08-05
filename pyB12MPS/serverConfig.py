@@ -1,10 +1,9 @@
 # Configuration file for pyB12MPS
-# Bridge12 Technologies, Inc. 2020
+# Bridge12 Technologies, Inc.
 
 # TCP Server
 HOST = 'localhost'
-#PORT = 50007
-PORT = 90
+PORT = 50007
 
 # Serial Port Settings
 defaultSerialPort = 'COM5'

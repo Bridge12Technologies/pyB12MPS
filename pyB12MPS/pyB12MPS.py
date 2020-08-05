@@ -9,6 +9,7 @@ import serial.tools.list_ports
 
 HOST = serverConfig.HOST
 PORT = serverConfig.PORT
+
 initializeOnStart = serverConfig.initializeOnStart
 defaultSerialPort = serverConfig.defaultSerialPort
 serialDelay = serverConfig.serialDelay
@@ -90,7 +91,7 @@ def close():
     print('Closing serial socket...')
 
     isMPSReady = systemReady()
-    if (isMPSReady != 0):
+    if (isMPSReady == 0):
         print('Serial socket closed')
     else:
         print('Failed to close serial socket')
@@ -686,7 +687,7 @@ def screen(screenState = None):
         screenStateReading = int(screenStateReadingString)
         return screenStateReading
 
-def send_command(command,recv = False):
+def send_command(command, recv = False):
     '''Send string command to python MPS server
 
     Args:
@@ -740,11 +741,22 @@ def serialNumber():
     serialNumberString = send_command('serial?',recv = True)
     return serialNumberString
 
-def start(serialPort = None):
+def set_host(host):
+    global HOST
+    HOST = host
+
+def set_port(port):
+    global PORT
+    PORT = port
+
+def start(serialPort = None, host = None, port = None):
+
     '''Start python TCP server
 
     Args:
         serialPort (None, str): If given, serial port to establish MPS connection.
+        ip (None, str): If given, the IP address to use for the server
+        port (None, str); If given, the port to use for the server
 
     Example::
 
@@ -752,18 +764,43 @@ def start(serialPort = None):
 
         start('COM5') # Start python server using "COM5" as serial port
     '''
+    # Need HOST and PORT to be global
+    global HOST
+    global PORT
 
-    serverScriptFilename = 'pyB12MPS_server.py'
+    serverScriptFilename = '__main__.py'
     serverScriptDir = os.path.join(dir_path,serverScriptFilename)
 
-    if serialPort is None:
-        p = subprocess.Popen([sys.executable, serverScriptDir], 
-                                    stdout=subprocess.PIPE, 
-                                    stderr=subprocess.STDOUT)
+    args = []
+    if serialPort is not None:
+        args += [serialPort]
+    elif autoDetectSerialPort:
+        serialPort =  detectArduinoSerialPort()
+        args += [serialPort]
     else:
-        p = subprocess.Popen([sys.executable, serverScriptDir, serialPort], 
-                                    stdout=subprocess.PIPE, 
-                                    stderr=subprocess.STDOUT)
+        args += [defaultSerialPort]
+
+    if host is None:
+        host = HOST
+    args += [host]
+
+    if port is None:
+        port = PORT
+    args += [str(port)]
+    
+    HOST = host
+    PORT = port
+    print()
+    print('--- Server Parameters ---')
+    print('Serial Port: %s'%serialPort)
+    print('HOST: %s'%host)
+    print('PORT: %s'%port)
+    print('-------------------------')
+    print()
+
+    p = subprocess.Popen([sys.executable, serverScriptDir] + args, 
+                                stdout=subprocess.PIPE, 
+                                stderr=subprocess.STDOUT)
 
     print('Server starting...')
 
@@ -771,13 +808,21 @@ def start(serialPort = None):
     errorCounter = 0
 
     while (serverErrorIndicator != 0):
+        
         time.sleep(0.1)
         serverErrorIndicator = test()
+        print('Server Error Code: %s'%serverErrorIndicator)
         errorCounter += 1
 
-        if (errorCounter >= 50):
-            print('Failed to start server.')
-            break
+        if (p.poll() is not None) or (errorCounter >= 50):
+            print()
+            print('Server failed to start.')
+            print()
+            print('Please visit the Troubleshooting section of the ')
+            print('online documentation at pyB12MPS.bridge12.com for')
+            print('more information.')
+            print()
+            return
 
     if serverErrorIndicator == 0:
         print('Server started.')

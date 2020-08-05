@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. Quick-Start Guide &mdash; pyB12MPS 1.0.7 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/rtdB12Ttheme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3. pyB12MPS Module" href="pyB12MPS.html" />
+    <link rel="prev" title="1. Installing pyB12MPS" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pyB12MPS
+          
+
+          
+            
+            <img src="_static/b12logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installing pyB12MPS</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Quick-Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">2.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#communicating-with-the-bridge12-mps">2.2. Communicating with the Bridge12 MPS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging">2.3. Debugging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#starting-the-server">2.3.1. Starting the Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sending-client-commands">2.3.2. Sending Client Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-reading-diode-voltage">2.3.3. Example - Reading Diode Voltage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyB12MPS.html">3. pyB12MPS Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyB12MPS-Server.html">4. pyB12MPS Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">5. Troubleshooting</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyB12MPS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li><span class="section-number">2. </span>Quick-Start Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/quick-start.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="quick-start-guide">
+<h1><span class="section-number">2. </span>Quick-Start Guide<a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2><span class="section-number">2.1. </span>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The pyB12MPS python package consists of a python server module
+<a class="reference internal" href="pyB12MPS-Server.html"><span class="doc">pyB12MPS Server</span></a>
+and a python client module
+<a class="reference internal" href="pyB12MPS.html"><span class="doc">pyB12MPS Module</span></a>.</p>
+<p>The python server establishes a socket connection to the MPS. The server must be running in the background for the client module to send commands to the Bridge12 MPS. Instructions for a user to remote control the Bridge12 MPS from a terminal window are summarized in section <a class="reference internal" href="#sec-communicating-with-mps"><span class="std std-ref">Communicating with the Bridge12 MPS</span></a>.</p>
+<p>For the more experienced user and to help debugging user-written applications the server and client module can be started in two different instances. This approach is described in section <a class="reference internal" href="#debugging"><span class="std std-ref">Debugging</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure the Bridge12 MPS is connected to the computer. To connect the Bridge12 MPS to a computer a USB-A to USB-A cable is required.</p>
+</div>
+</div>
+<div class="section" id="communicating-with-the-bridge12-mps">
+<span id="sec-communicating-with-mps"></span><h2><span class="section-number">2.2. </span>Communicating with the Bridge12 MPS<a class="headerlink" href="#communicating-with-the-bridge12-mps" title="Permalink to this headline">¶</a></h2>
+<p>In a terminal window start a python environment</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python</span>
+</pre></div>
+</div>
+<p>Now you can import the pyB12MPS module and start the server in the background</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyB12MPS</span> <span class="k">as</span> <span class="nn">mps</span>
+
+<span class="n">mps</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The pyB12MPS module will open a socket to the Bridge12 MPS in the background. The unit will reset and after initialization return to the main screen. Once the main screen is displayed, the Bridge12 MPS is ready to receive commands from the terminal. In most terminal applications you have to hit the return key once to get back to the prompt.</p>
+<p>There are two types of commands that you can send to the Bridge12 MPS, queries and set commands. In general, queries will have no argumnets, while a set command requires an argument. For example to query the frequency</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mps</span><span class="o">.</span><span class="n">freq</span><span class="p">()</span>
+<span class="mf">9.553</span>
+</pre></div>
+</div>
+<p>The system will return the current microwave frequency in GHz. In this case 9.553 GHz.</p>
+<p>To set the frequency send this command</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mps</span><span class="o">.</span><span class="n">freq</span><span class="p">(</span><span class="mf">9.673</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will set the microwave frequency to 9.673 GHz. A complete list of client commands can be found <a class="reference internal" href="pyB12MPS.html"><span class="doc">here</span></a>.</p>
+<p>To close the connection to the Bridge12 MPS send this command</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mps</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+<span class="n">Communication</span> <span class="k">with</span> <span class="n">MPS</span> <span class="n">stopped</span>
+</pre></div>
+</div>
+<p>This will stop the serial communication with the system and close the serial socket server, which is running in the background.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using pyB12MPS on Mac or Linux, do not just close the terminal window to terminate the program. This will not stop the server in the background and you will not be able to start the server successfully again.
+If the window is closed accidentally, you need to manually kill the python process that runs the socket server.</p>
+<p>On Mac/Linux: In a terminal window type:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ps</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>to get a list of the active processes. Identify the python process and use the kill command with the PID to kill the corresponding process.</p>
+<p>On Windows: The python process can be terminated by opening the Task Manager, selecting the python process and clicking the “End task” button.</p>
+</div>
+</div>
+<div class="section" id="debugging">
+<h2><span class="section-number">2.3. </span>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="starting-the-server">
+<h3><span class="section-number">2.3.1. </span>Starting the Server<a class="headerlink" href="#starting-the-server" title="Permalink to this headline">¶</a></h3>
+<p>In a terminal start the server by running:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python pyB12MPS_server.py</span>
+</pre></div>
+</div>
+<p>Make sure you are in the same directory as the pyB12MPS_server.py file. In this directory, you will also find a serverConfig.py file. The serverConfig.py file contains the IP and PORT information for the server as well as other initialization information. If the “autoDetectSerialPort” variable in the serverConfig.py file is set to True, the script will automatically detect the serial port the MPS is connected to and start the python server.</p>
+<p>Alternatively, you can specify the serial port by giving this as an argument. In this case, the automatic detection of the serial port will be overridden. For example to specify com port 3 (COM3):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python pyB12MPS_server.py COM3</span>
+</pre></div>
+</div>
+<p>Once the connection has been established, you can use the client script to send commands to the MPS.</p>
+</div>
+<div class="section" id="sending-client-commands">
+<h3><span class="section-number">2.3.2. </span>Sending Client Commands<a class="headerlink" href="#sending-client-commands" title="Permalink to this headline">¶</a></h3>
+<p>A complete list of client commands can be found <a class="reference internal" href="pyB12MPS.html"><span class="doc">here</span></a>.</p>
+<p>To set the frequency to 9.4 GHz:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyB12MPS</span> <span class="k">as</span> <span class="nn">mps</span>
+
+<span class="n">mps</span><span class="o">.</span><span class="n">freq</span><span class="p">(</span><span class="mf">9.4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To set the microwave power to 10 dBm:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyB12MPS</span> <span class="k">as</span> <span class="nn">mps</span>
+
+<span class="n">mps</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-reading-diode-voltage">
+<h3><span class="section-number">2.3.3. </span>Example - Reading Diode Voltage<a class="headerlink" href="#example-reading-diode-voltage" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyB12MPS</span> <span class="k">as</span> <span class="nn">mps</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="c1"># Number of points to acquire</span>
+<span class="n">pts</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># Time delay between readings in seconds</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">1.</span>
+
+<span class="c1"># pre-allocate list of Rx voltage readings</span>
+<span class="n">rxVoltageList</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+    <span class="c1"># Delay before reading</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+
+    <span class="c1"># Read Rx voltage in mV</span>
+    <span class="n">rxVoltage</span> <span class="o">=</span> <span class="n">mps</span><span class="o">.</span><span class="n">rxdiodemv</span><span class="p">()</span>
+
+    <span class="c1"># Print the Rx voltage reading</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Rx Voltage: </span><span class="si">%0.01f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">rxVoltage</span><span class="p">)</span>
+
+    <span class="c1"># Append data to list</span>
+    <span class="n">rxVoltageList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rxVoltage</span><span class="p">)</span>
+
+<span class="c1"># Print Result</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Rx Voltage Readings:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rxVolrageList</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pyB12MPS.html" class="btn btn-neutral float-right" title="3. pyB12MPS Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral float-left" title="1. Installing pyB12MPS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bridge12 Technologies, Inc.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

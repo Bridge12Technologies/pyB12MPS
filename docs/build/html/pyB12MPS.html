@@ -1,0 +1,1139 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3. pyB12MPS Module &mdash; pyB12MPS 1.0.7 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/rtdB12Ttheme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4. pyB12MPS Server" href="pyB12MPS-Server.html" />
+    <link rel="prev" title="2. Quick-Start Guide" href="quick-start.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pyB12MPS
+          
+
+          
+            
+            <img src="_static/b12logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installing pyB12MPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick-start.html">2. Quick-Start Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. pyB12MPS Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyB12MPS.pyB12MPS">3.1. pyB12MPS Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-pyb12mps-module">3.2. Example - pyB12MPS Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyB12MPS-Server.html">4. pyB12MPS Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">5. Troubleshooting</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyB12MPS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li><span class="section-number">3. </span>pyB12MPS Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pyB12MPS.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pyb12mps-module">
+<h1><span class="section-number">3. </span>pyB12MPS Module<a class="headerlink" href="#pyb12mps-module" title="Permalink to this headline">¶</a></h1>
+<p>In this section the functions of the B12MPS module are explained. In general, most functions can be used to query a parameter, while some functions can query and set (send) a value to the MPS.</p>
+<p>For example the command:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">B12MPS</span><span class="o">.</span><span class="n">freq</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>will return the current microwave frequency of the MPS, while:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">B12MPS</span><span class="o">.</span><span class="n">freq</span><span class="p">(</span><span class="mf">9.554</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will set the microwave frequency to 9.554 GHz.</p>
+<div class="section" id="module-pyB12MPS.pyB12MPS">
+<span id="pyb12mps-functions"></span><h2><span class="section-number">3.1. </span>pyB12MPS Functions<a class="headerlink" href="#module-pyB12MPS.pyB12MPS" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.ampgain">
+<code class="sig-name descname">ampgain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gain</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.ampgain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Advanced feature to adjust gain for calibration of MPS</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gain</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>int</em>) – Amplifier gain in dBm</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if gain is None, returns the current amplifier gain value in dBm</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.ampstatus">
+<code class="sig-name descname">ampstatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ampState</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.ampstatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query MPS microwave amplifier status</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 71%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>lockState</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Amplifier Off</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Amplifier On</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>Amplifier Ext</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Amplifier status of MPS</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ampState (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.amptemp">
+<code class="sig-name descname">amptemp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.amptemp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the MPS amplifier temperature</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Amplifier temperature in degrees C</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ampTemp (float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close serial port</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.debug">
+<code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">debugMode</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query/Set debug mode of MPS</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>debugMode</strong> (<em>None</em><em>, </em><em>int</em>) – If None, query the debug mode. Otherwise set the debug mode.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If query, returns current debug mode of MPS</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>debugMode (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.detectArduinoSerialPort">
+<code class="sig-name descname">detectArduinoSerialPort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.detectArduinoSerialPort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the serial port for the Arduino</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Arduino serial port. If Arduino serial port is not found, uses the default serial port.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.firmware">
+<code class="sig-name descname">firmware</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.firmware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the MPS firmware version</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Firmware version</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>firmwareVersion (str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.flush">
+<code class="sig-name descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flush the MPS Serial Buffer</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.freq">
+<code class="sig-name descname">freq</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">freqValue</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query Microwave Frequency</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>freqValue</strong> (<em>int</em><em>, </em><em>float</em>) – Set Frequency in GHz, by default this parameter is None and the frequency is queried</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>frequency in GHz</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">microwaveFrequency</span> <span class="o">=</span> <span class="n">freq</span><span class="p">()</span> <span class="c1"># Query Microwave Frequency</span>
+
+<span class="n">freq</span><span class="p">(</span><span class="mf">9.4</span><span class="p">)</span> <span class="c1"># Set Microwave Frequency to 9.4 GHz</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.id">
+<code class="sig-name descname">id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the instrument identificationstring of MPS</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ID of instrument: “Bridge12 MPS”</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>idString (str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.in_waiting">
+<code class="sig-name descname">in_waiting</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.in_waiting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bytes in MPS serial port</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of bytes at serial port</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>value (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.listPorts">
+<code class="sig-name descname">listPorts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.listPorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the serial ports available. This function is for troubleshooting when the serial port of the MPS is unknown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary of Serial Ports. Key is serial port. Value is description.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>portsAvailable (dict)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">portsAvailable</span> <span class="o">=</span> <span class="n">listPorts</span><span class="p">()</span> <span class="c1"># Return Dictionary of Serial Ports Available</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.lockdelay">
+<code class="sig-name descname">lockdelay</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">delay</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.lockdelay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query lock delay in ms</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>delay</strong> (<em>None</em><em>, </em><em>int</em><em>, </em><em>float</em>) – Frequency lock delay in ms</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If delay is None, returns lock delay value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>delayReading (int)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">delay</span> <span class="o">=</span> <span class="n">lockdelay</span><span class="p">()</span> <span class="c1"># Query the Frequency Lock Delay in ms</span>
+
+<span class="n">lockdelay</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># Set the Frequency Lock Delay to 100 ms</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.lockstatus">
+<code class="sig-name descname">lockstatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lockState</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verifyOperateMode</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.lockstatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query the frequency lock, must be performed in operate mode</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 71%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>lockState</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Disable Frequency Lock</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Enable Frequency Lock</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lockState</strong> (<em>None</em><em>, </em><em>int</em>) – if lockState is not None, sets the lock state</p></li>
+<li><p><strong>verifyOperateMode</strong> (<em>bool</em>) – If True, verifies that the operate mode is enabled before setting the lock state</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The frequency lock can only be enabled in operate mode (screen() returns 1).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Frequency lock state of MPS</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>lockState (int)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">lockState</span> <span class="o">=</span> <span class="n">lockstatus</span><span class="p">()</span> <span class="c1"># Query the Frequency Lock Status</span>
+
+<span class="n">lockstatus</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Diable Frequency Lock</span>
+<span class="n">lockstatus</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Enable Frequency Lock</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.lockstep">
+<code class="sig-name descname">lockstep</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.lockstep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query Lock frequency step in kHz</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step</strong> (<em>None</em><em>, </em><em>int</em><em>, </em><em>float</em>) – Frequency lock step in kHz</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If step is None, returns current lock step value in kHz</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>stepReading (int)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">step</span> <span class="o">=</span> <span class="n">lockstep</span><span class="p">()</span> <span class="c1"># Query the Lock Frequency Step in kHz</span>
+
+<span class="n">lockstep</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="c1"># Set the Frequency Lock Step to 20 kHz</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.open">
+<code class="sig-name descname">open</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize MPS serial port connection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.power">
+<code class="sig-name descname">power</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">powerValue</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query Microwave Power</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>powerValue</strong> (<em>None</em><em>, </em><em>int</em><em>, </em><em>float</em>) – Set Power in dBm, by default this parameter is None and the power is queried</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Microwave power in dBm</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>powerValue (float)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">powerValue</span> <span class="o">=</span> <span class="n">power</span><span class="p">()</span> <span class="c1"># Query Microwave Power</span>
+
+<span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># Set microwave power to 10 dBm</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rfstatus">
+<code class="sig-name descname">rfstatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rfState</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verifyWaveguideStatus</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rfstatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query the RF status</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 83%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>rfState</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Disable RF Output</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Enable RF Output</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>External Trigger Microwave Output</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rfState</strong> (<em>None</em><em>, </em><em>int</em>) – RF Status value</p></li>
+<li><p><strong>verifyWaveguideStatus</strong> (<em>bool</em>) – Check if waveguide status is Enabled (True by default).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If rfStatus is not None, returns queried RF status</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>rfStateReading (int)</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The microwave output (rfstatus(1)) can only be enabled if the waveguide switch is set to DNP mode (wgstatus() returns 1).</p>
+</div>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">rfState</span> <span class="o">=</span> <span class="n">rfstatus</span><span class="p">()</span> <span class="c1"># Query the RF State</span>
+
+<span class="n">rfstatus</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Disable Microwave Output</span>
+<span class="n">rfstatus</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Enable Microwave Output</span>
+<span class="n">rfstatus</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Enable External Trigger of Microwave Output</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rfsweepdata">
+<code class="sig-name descname">rfsweepdata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rfsweepdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data from RF sweep</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuning curve from previous rf sweep</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.array</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">mps</span><span class="o">.</span><span class="n">rfsweepdata</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rfsweepdosweep">
+<code class="sig-name descname">rfsweepdosweep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rfsweepdosweep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start single RF Sweep.</p>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">mps</span><span class="o">.</span><span class="n">rfsweepdosweep</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rfsweepdwelltime">
+<code class="sig-name descname">rfsweepdwelltime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dwellTime</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rfsweepdwelltime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rf sweep dwell time in us</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dwellTime</strong> – If dwellTime is not None, value to set the RF sweep dwell time in us</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If dwellTime is None, the current value of the rf sweep dwell time in us.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">rfsweepdwelltime</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># set rf sweep dwell time to 50 us</span>
+<span class="n">dwellTime</span> <span class="o">=</span> <span class="n">rfsweepdwelltime</span><span class="p">()</span> <span class="c1"># Query the rf sweep dwell time</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rfsweepinitialdwelltime">
+<code class="sig-name descname">rfsweepinitialdwelltime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dwellTime</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rfsweepinitialdwelltime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rf sweep dwell time in ms for first point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dwellTime</strong> – If dwellTime is not None, value to set the RF sweep dwell time for the first point in ms</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If dwellTime is None, the current value of the RF sweep dwell time for the first point in ms.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">mps</span><span class="o">.</span><span class="n">rfsweepinitialdwelltime</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># Set the dwell time for the first point to 100 ms</span>
+<span class="n">dwellTime</span> <span class="o">=</span> <span class="n">mps</span><span class="o">.</span><span class="n">rfsweepinitialdwelltime</span><span class="p">()</span> <span class="c1"># Query the dwell time for the first point in ms</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rfsweepnpts">
+<code class="sig-name descname">rfsweepnpts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rfSweepNptsValue</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rfsweepnpts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/query number of points in RF sweep</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rfsweepnpts</strong> (<em>int</em>) – Set number of points in RF sweep. If empty, number of points is queried</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If rfSweepNptsValue argument is None, the number of point in the rf sweep</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">pts</span> <span class="o">=</span> <span class="n">rfsweepnpts</span><span class="p">()</span> <span class="c1"># query the number of points in rf sweep</span>
+<span class="n">rfsweepnpts</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># set the number of points in rf sweep to 100</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rfsweeppower">
+<code class="sig-name descname">rfsweeppower</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tunePower</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rfsweeppower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query Power for RF Sweep</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tunePower</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>int</em>) – If not None, sets the rf sweep power to this value in dBm. Otherwise queries the current rf sweep power.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If tunePower argument is None, the current rf sweep power.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">mps</span><span class="o">.</span><span class="n">rfsweeppower</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span> <span class="c1"># set rf sweep power to 15 dBm</span>
+<span class="n">tunePower</span> <span class="o">=</span> <span class="n">mps</span><span class="o">.</span><span class="n">rfsweepPower</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rfsweepsw">
+<code class="sig-name descname">rfsweepsw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rfSweepSwValue</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rfsweepsw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/query predefined RF sweep width (MHs)</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>rfsweepsw</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>250 MHz</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>100 MHz</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>50 MHz</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>10 MHz</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rfsweepsw</strong> (<em>int</em>) – rfsweepsw variable which determines the rf sweep width. If None, number of points is queried</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>rf sweep width</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">mps</span><span class="o">.</span><span class="n">rfsweepsw</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># set rf sweep width to 250 MHz</span>
+<span class="n">sweepWidth</span> <span class="o">=</span> <span class="n">mps</span><span class="o">.</span><span class="n">rfsweepsw</span><span class="p">()</span> <span class="c1"># Query current rf sweep width</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rxdiodesn">
+<code class="sig-name descname">rxdiodesn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rxdiodesn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query serial number of Rx diode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Serial number string of Rx diode</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>serialNumberRx (str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rxpowerdbm">
+<code class="sig-name descname">rxpowerdbm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rxpowerdbm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the Rx diode reading in dBm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Reciever monitor power reading in dBm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>rxPower (float)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">rxPower</span> <span class="o">=</span> <span class="n">rxpowerdbm</span><span class="p">()</span> <span class="c1"># Query Rx diode power reading</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.rxpowermv">
+<code class="sig-name descname">rxpowermv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.rxpowermv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the Rx diode reading in mV</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Receiver monitor voltage reading in mV</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>rxVoltage (float)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">rxVoltage</span> <span class="o">=</span> <span class="n">rxpowermv</span><span class="p">()</span> <span class="c1"># Query Rx diode voltage</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.screen">
+<code class="sig-name descname">screen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">screenState</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.screen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query Screen Status</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>screen</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Main Screen</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Operate Screen</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>Sweep Screen</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>Advanced Screen</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>screenState</strong> (<em>None</em><em>, </em><em>int</em>) – If screenState is not None, sets the screen state</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If screenState is None, returns the screen state</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>screenStateReading (int)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">screenState</span> <span class="o">=</span> <span class="n">screen</span><span class="p">()</span> <span class="c1"># Query the Screen Status</span>
+
+<span class="n">screenstatus</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Set Screen to Main Screen</span>
+<span class="n">screenstatus</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Set Screen to Operate Screen</span>
+<span class="n">screenstatus</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Set Screen to Sweep Screen</span>
+<span class="n">screenstatus</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># Set Screen to Advanced Screen</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.send_command">
+<code class="sig-name descname">send_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command</span></em>, <em class="sig-param"><span class="n">recv</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.send_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send string command to python MPS server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> (<em>str</em>) – string command to be sent to MPS Server</p></li>
+<li><p><strong>recv</strong> (<em>bool</em>) – True if serial port should be read after writing. False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if recv = True, returns string received from MPS Server</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>recv_string (str)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">send_command</span><span class="p">(</span><span class="s1">&#39;freq 9300000&#39;</span><span class="p">)</span> <span class="c1"># Set Frequency to 9.3 GHz</span>
+
+<span class="n">freqStringkHz</span> <span class="o">=</span> <span class="n">send_command</span><span class="p">(</span><span class="s1">&#39;freq?&#39;</span><span class="p">,</span><span class="n">recv</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># Query the microwave frequency in kHz</span>
+<span class="n">freqValue</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">freqStringkHz</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.e6</span> <span class="c1"># Convert frequency string float in units of GHz</span>
+
+<span class="n">send_command</span><span class="p">(</span><span class="s1">&#39;_stop_&#39;</span><span class="p">)</span> <span class="c1"># Stop the python server</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.serialNumber">
+<code class="sig-name descname">serialNumber</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.serialNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query serial number of MPS</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Serial number string of MPS</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>serialNumber (str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">serialPort</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">host</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">port</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start python TCP server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serialPort</strong> (<em>None</em><em>, </em><em>str</em>) – If given, serial port to establish MPS connection.</p></li>
+<li><p><strong>ip</strong> (<em>None</em><em>, </em><em>str</em>) – If given, the IP address to use for the server</p></li>
+<li><p><strong>port</strong> (<em>None</em><em>, </em><em>str</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">start</span><span class="p">()</span> <span class="c1"># Start python server with automatically detected serial port or default serial port (defined in configuration file)</span>
+
+<span class="n">start</span><span class="p">(</span><span class="s1">&#39;COM5&#39;</span><span class="p">)</span> <span class="c1"># Start python server using &quot;COM5&quot; as serial port</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop python server</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.systemReady">
+<code class="sig-name descname">systemReady</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.systemReady" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query python server for initialized status of MPS</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 78%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>isMPSReady</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>MPS Serial Connection Not Initialized</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>MPS Serial Connection Initialized</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>RF Status value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>isMPSReady (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.systemstatus">
+<code class="sig-name descname">systemstatus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.systemstatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns dictionary of MPS status</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keys</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>freq</p></td>
+</tr>
+<tr class="row-odd"><td><p>power</p></td>
+</tr>
+<tr class="row-even"><td><p>rxpowermv</p></td>
+</tr>
+<tr class="row-odd"><td><p>txpowermv</p></td>
+</tr>
+<tr class="row-even"><td><p>rfstatus</p></td>
+</tr>
+<tr class="row-odd"><td><p>wgstatus</p></td>
+</tr>
+<tr class="row-even"><td><p>ampstatus</p></td>
+</tr>
+<tr class="row-odd"><td><p>amptemp</p></td>
+</tr>
+<tr class="row-even"><td><p>lockstatus</p></td>
+</tr>
+<tr class="row-odd"><td><p>screen</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dictionary of system status variables</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.test">
+<code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test Server Connection</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A value of zero (0) indicates normal operation of the server. Any other value indicates a server error.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>serverErrorIndicator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.txdiodesn">
+<code class="sig-name descname">txdiodesn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.txdiodesn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query serial number of Tx diode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Serial number string of Tx diode</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>serialNumberTx (str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.txpowerdbm">
+<code class="sig-name descname">txpowerdbm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.txpowerdbm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns transmitter power monitor in dBm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Transmitter power monitor voltage in dBm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>txPower (float)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">txPower</span> <span class="o">=</span> <span class="n">txpowerdbm</span><span class="p">()</span> <span class="c1"># Query Tx diode power reading</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.txpowermv">
+<code class="sig-name descname">txpowermv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.txpowermv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns transmitter power monitor in mV</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Transmitter power monitor voltage in mV</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>txVoltage (float)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">txVoltage</span> <span class="o">=</span> <span class="n">txpowermv</span><span class="p">()</span> <span class="c1"># Query Tx diode voltage</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyB12MPS.pyB12MPS.wgstatus">
+<code class="sig-name descname">wgstatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">wgStatus</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyB12MPS.pyB12MPS.wgstatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/Query the waveguide switch (wg) status</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 81%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>wgStatus</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Disable Waveguide Switch (EPR Mode)</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Enable Waveguide Switch (DNP Mode)</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wgStatus</strong> (<em>None</em><em>, </em><em>int</em>) – wg status value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If wgStatus is not None, returns queried wg status</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>wgStatusReading (int)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">wgState</span> <span class="o">=</span> <span class="n">wgstatus</span><span class="p">()</span> <span class="c1"># Query the Waveguide State</span>
+
+<span class="n">wgstatus</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Switch to EPR Mode</span>
+<span class="n">wgstatus</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Switch to DNP Mode</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="example-pyb12mps-module">
+<h2><span class="section-number">3.2. </span>Example - pyB12MPS Module<a class="headerlink" href="#example-pyb12mps-module" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">B12MPS</span> <span class="k">as</span> <span class="nn">mps</span>
+
+<span class="n">serverTest</span> <span class="o">=</span> <span class="n">mps</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">serverTest</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">mps</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="n">mps</span><span class="o">.</span><span class="n">freq</span><span class="p">(</span><span class="mf">9.6</span><span class="p">)</span> <span class="c1"># Set microwave frequency to 9.6 GHz</span>
+
+<span class="n">mps</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># Set microwave power to 10 dBm</span>
+
+<span class="n">mps</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pyB12MPS-Server.html" class="btn btn-neutral float-right" title="4. pyB12MPS Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="quick-start.html" class="btn btn-neutral float-left" title="2. Quick-Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Bridge12 Technologies, Inc.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
