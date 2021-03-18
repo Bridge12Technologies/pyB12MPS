@@ -768,9 +768,6 @@ def start(serialPort = None, host = None, port = None):
     global HOST
     global PORT
 
-    serverScriptFilename = '__main__.py'
-    serverScriptDir = os.path.join(dir_path,serverScriptFilename)
-
     args = []
     if serialPort is not None:
         args += [serialPort]
@@ -798,7 +795,7 @@ def start(serialPort = None, host = None, port = None):
     print('-------------------------')
     print()
 
-    p = subprocess.Popen([sys.executable, serverScriptDir] + args, 
+    p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
                                 stdout=subprocess.PIPE, 
                                 stderr=subprocess.STDOUT)
 
