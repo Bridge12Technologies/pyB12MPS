@@ -1,7 +1,5 @@
 # README #
 
-[![N|Solid](http://www.bridge12.com/wp-content/uploads/2016/10/b12logo.png)](http://www.bridge12.com/)
-
 pyB12MPS is a python package for interfacing with Bridge12 MPS.
 
 The complete online documentation for the Bridge12 MPS is available [here](http://mps.bridge12.com).
