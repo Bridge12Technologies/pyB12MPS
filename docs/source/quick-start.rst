@@ -148,7 +148,7 @@ Example - Reading Diode Voltage
         time.sleep(dt)
 
         # Read Rx voltage in mV
-        rxVoltage = mps.rxdiodemv()
+        rxVoltage = mps.rxpowermv()
 
         # Print the Rx voltage reading
         print('Rx Voltage: %0.01f'%rxVoltage)
@@ -158,5 +158,5 @@ Example - Reading Diode Voltage
 
     # Print Result
     print('Rx Voltage Readings:')
-    print(rxVolrageList)
+    print(rxVoltageList)
 
