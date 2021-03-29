@@ -749,7 +749,7 @@ def set_port(port):
     global PORT
     PORT = port
 
-def start(serialPort = None, host = None, port = None):
+def start(serialPort = None, host = None, port = None, debug = False):
 
     '''Start python TCP server
 
@@ -795,23 +795,17 @@ def start(serialPort = None, host = None, port = None):
     print('-------------------------')
     print()
 
-#    p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
-#                                stdout=subprocess.PIPE, 
-#                                stderr=subprocess.STDOUT)
-
-#    p = subprocess.call([sys.executable, '-m', 'pyB12MPS'] + args, 
-#                                stdout=subprocess.PIPE, 
-#                                stderr=subprocess.STDOUT)
-    print('Starting Subprocess')
-    p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
-                                stdout=subprocess.PIPE, 
-                                stderr=subprocess.STDOUT,
-                                shell = True,
-                                creationflags = subprocess.DETACHED_PROCESS)
-
-#    p = subprocess.run([sys.executable, '-m', 'pyB12MPS'] + args)
-
-#    os.system('%s -m pyB12MPS COM4 localhost 50006'%sys.executable)
+    if debug == True:
+        print('Starting Subprocess')
+        p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.STDOUT,
+                                    shell = True,
+                                    creationflags = subprocess.DETACHED_PROCESS)
+    else:
+        p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.STDOUT)
     
     print('Server starting...')
 
