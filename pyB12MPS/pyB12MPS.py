@@ -135,8 +135,8 @@ def detectArduinoSerialPort():
     if arduinoDetected:
         serialPort = arduinoPort
     else:
-        print('No MPS automatically detected. Trying %s instead (default COM port)'%(defaultSerialPort))
-        serialPort = defaultSerialPort 
+        print('Automatic detection failed.')
+        serialPort = None
     return serialPort
 
 def firmware():
@@ -773,9 +773,10 @@ def start(serialPort = None, host = None, port = None, debug = False):
         args += [serialPort]
     elif autoDetectSerialPort:
         serialPort =  detectArduinoSerialPort()
+        if serialPort == None:
+            print('\nCannot automatically connect to MPS.\nPlease specify COM Port manually.')
+            return
         args += [serialPort]
-    else:
-        args += [defaultSerialPort]
 
     if host is None:
         host = HOST
