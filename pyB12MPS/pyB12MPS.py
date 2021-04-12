@@ -128,7 +128,7 @@ def detectArduinoSerialPort():
     arduinoDetected = False
     for p in ports:
         print(p)
-        if 'Arduino' in p.description:
+        if p.pid == 61:
             arduinoDetected = True
             arduinoPort = p.device
             print('MPS Detected on port %s'%(arduinoPort))
