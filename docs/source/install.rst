@@ -25,5 +25,5 @@ To manually install the required packages:
 
 .. code-block:: console
 
-    python -m pip install numpy pyserial
+    pip install numpy pyserial
 
