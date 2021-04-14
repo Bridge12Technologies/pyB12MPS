@@ -22,7 +22,7 @@ print(sys.path)
 
 project = u'pyB12MPS'
 
-copyright = u'2020, Bridge12 Technologies, Inc.'
+copyright = u'2021, Bridge12 Technologies, Inc.'
 author = u'Timothy Keller'
 
 with open("../../pyB12MPS/version.py", "r") as f:
