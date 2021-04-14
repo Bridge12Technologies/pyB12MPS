@@ -128,7 +128,7 @@ def detectMPSSerialPort():
     MPSDetected = False
     for p in ports:
         print(p)
-        if p.pid == 61:
+        if p.pid == 61 and (p.vid == 9025 or p.vid == 10755):
             MPSDetected = True
             MPSPort = p.device
             print('MPS Detected on port %s'%(MPSPort))
