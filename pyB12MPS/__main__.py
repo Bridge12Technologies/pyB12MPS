@@ -87,6 +87,10 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
         recv_string = recv_bytes.decode('utf-8').rstrip()
         print('Received string: %s'%recv_string)
 
+        if recv_string == '':
+            print('Server test completed.')
+            return
+
         ### special commands for serial port ###
         if recv_string == '_flush_':
             print('Flushing Buffer')
@@ -129,6 +133,7 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
             print('Sending to MPS: ' + recv_string)
 
             self.server.ser.write(recv_bytes)
+
 
             # if query
             if recv_string[-1] == '?':
