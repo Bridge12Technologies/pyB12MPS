@@ -25,10 +25,14 @@ project = u'pyB12MPS'
 copyright = u'2020, Bridge12 Technologies, Inc.'
 author = u'Timothy Keller'
 
+with open("../../pyB12MPS/version.py", "r") as f:
+    # Define __version__
+    exec(f.read())
+
 # The short X.Y version
-version = u'1.0'
+version = '.'.join(__version__.split('.')[0:2])
 # The full version, including alpha/beta/rc tags
-release = u'1.0.7'
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 

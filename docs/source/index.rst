@@ -9,11 +9,11 @@ pyB12MPS Documentation
 
 .. |bridge12MPSLink| raw:: html
 
-   <a href="http://www.bridge12.com/bridge12-mps-microwave-source-for-9-ghz-odnp-experiments/" target="_blank"> Bridge12 MPS</a>
+   <a href="http://mps.bridge12.com/" target="_blank"> Bridge12 MPS</a>
 
 .. |pyB12MPSLink| raw:: html
 
-   <a href="https://pypi.org/project/pyB12MPS/" target="_blank"> pyB12MPS</a>
+   <a href="https://pypi.org/project/pyB12MPS/" target="_blank">pyB12MPS</a>
 
 
 
@@ -21,7 +21,7 @@ pyB12MPS is a python package for interfacing with the Bridge12 Microwave Power S
 
 For detailed technical information about the MPS please visit the |bridge12MPSLink| website.
 
-Current stable version: **1.0.8** (08/05/2020) (|pyB12MPSLink|)
+Current stable |pyB12MPSLink| version: |release| (|today|)
 
 Features
 ========

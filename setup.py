@@ -3,7 +3,7 @@ import setuptools
 with open('README.md','r') as f:
     long_description = f.read()
 
-with open("dnplab/version.py", "r") as f:
+with open("pyB12MPS/version.py", "r") as f:
     # Define __version__
     exec(f.read())
 
