@@ -190,8 +190,6 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
                     from_mps_string = from_mps_bytes.decode('uft-8').rstrip()
                     print('Unsolicited Response: ' + from_mps_string)
 
-
-
 if __name__ == '__main__':
     print('Starting Server...')
     server = MPSTCPServer((HOST, PORT), MPSTCPHandler)

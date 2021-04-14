@@ -134,7 +134,6 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
 
             self.server.ser.write(recv_bytes)
 
-
             # if query
             if recv_string[-1] == '?':
                 # Read the serial data
@@ -152,8 +151,6 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
 
         else:
             print('Invalid Command')
-
-
 
 print('Starting Server...')
 server = MPSTCPServer((HOST, PORT), MPSTCPHandler)
