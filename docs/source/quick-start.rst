@@ -83,7 +83,7 @@ This will stop the serial communication with the system and close the serial soc
     On Windows: The python process can be terminated by opening the Task Manager, selecting the python process and clicking the "End task" button.
 
 
-Sending Client Commands
+Sending MPS Commands
 -----------------------
 
 Here we briefly go over a few useful commands. A complete list of MPS commands can be found :doc:`here <pyB12MPS>`.
