@@ -26,16 +26,14 @@ Example - pyB12MPS Module
 
 ::
 
-    import B12MPS as mps
+    import pyB12MPS as mps
 
-    serverTest = mps.test()
-
-    if serverTest != 0:
-        mps.start()
+    if not mps.test(): # if server is not running, start server
+        mps.start(debug = True)
 
     mps.freq(9.6) # Set microwave frequency to 9.6 GHz
 
     mps.power(10) # Set microwave power to 10 dBm
 
-    mps.stop()
+    mps.stop() # Stop the server
 

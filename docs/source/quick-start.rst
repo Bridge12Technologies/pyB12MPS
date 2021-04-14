@@ -13,7 +13,7 @@ and a python client module
 
 The python server establishes a socket connection to the MPS. The server must be running in the background for the client module to send commands to the Bridge12 MPS. Instructions for a user to remote control the Bridge12 MPS from a terminal window are summarized in section :ref:`Sec_Communicating_with_MPS`.
 
-For the more experienced user and to help debugging user-written applications the server and client module can be started in two different instances. This approach is described in section :ref:`Debugging`.
+If you experience any issues with the package please see the :ref:`troubleshooting` section.
 
 
 .. note::
@@ -82,39 +82,15 @@ This will stop the serial communication with the system and close the serial soc
 
     On Windows: The python process can be terminated by opening the Task Manager, selecting the python process and clicking the "End task" button.
 
----------
-Debugging
----------
-
-Starting the Server
--------------------
-
-In a terminal start the server by running:
-
-.. code-block:: console
-    
-    python pyB12MPS_server.py
-
-Make sure you are in the same directory as the pyB12MPS_server.py file. In this directory, you will also find a serverConfig.py file. The serverConfig.py file contains the IP and PORT information for the server as well as other initialization information. If the "autoDetectSerialPort" variable in the serverConfig.py file is set to True, the script will automatically detect the serial port the MPS is connected to and start the python server.
-
-Alternatively, you can specify the serial port by giving this as an argument. In this case, the automatic detection of the serial port will be overridden. For example to specify com port 3 (COM3):
-
-.. code-block:: console
-    
-    python pyB12MPS_server.py COM3
-
-Once the connection has been established, you can use the client script to send commands to the MPS.
 
 Sending Client Commands
 -----------------------
 
-A complete list of client commands can be found :doc:`here <pyB12MPS>`.
+Here we briefly go over a few useful commands. A complete list of MPS commands can be found :doc:`here <pyB12MPS>`.
 
 To set the frequency to 9.4 GHz:
 
 .. code-block:: python
-
-    import pyB12MPS as mps
 
     mps.freq(9.4)
 
@@ -122,41 +98,67 @@ To set the microwave power to 10 dBm:
 
 .. code-block:: python
 
-    import pyB12MPS as mps
-
     mps.power(10)
 
-Example - Reading Diode Voltage
--------------------------------
+To turn the WG switch to DNP mode:
+
+.. code-block:: python
+
+    mps.wgstatus(1)
+
+To turn on the RF output:
+
+.. code-block:: python
+
+    mps.rfstatus(1)
+
+The Rx and Tx diode voltages in mV can be queried as follows:
+
+.. code-block:: python
+
+    mps.rxpowermv()
+    mps.txpowermv()
+
+The RF output off and WG switch back to EPR mode:
+
+.. code-block:: python
+
+    mps.wgstatus(0)
+
+Example Script - Reading Diode Voltage
+--------------------------------------
 
 .. code-block:: python
 
     import pyB12MPS as mps
     import time
 
-    # Number of points to acquire
+    # Test if server is running
+    if mps.test(): # 0 indicates normal operation of server
+        mps.start(debug = True)
+
+    # Number of Rx voltage points to acquire
     pts = 10
 
-    # Time delay between readings in seconds
-    dt = 1.
+    # Time delay between measurements in seconds
+    dt = 0.5
 
-    # pre-allocate list of Rx voltage readings
     rxVoltageList = []
 
     for ix in range(pts):
-        # Delay before reading
+        # delay
         time.sleep(dt)
 
-        # Read Rx voltage in mV
+        # Read MPS Rx diode voltage
         rxVoltage = mps.rxpowermv()
 
-        # Print the Rx voltage reading
+        # Print Rx voltage reading
         print('Rx Voltage: %0.01f'%rxVoltage)
 
-        # Append data to list
+        # Append voltage reading to list
         rxVoltageList.append(rxVoltage)
 
-    # Print Result
+    # print result
     print('Rx Voltage Readings:')
     print(rxVoltageList)
 
