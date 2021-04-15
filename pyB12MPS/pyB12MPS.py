@@ -46,7 +46,7 @@ def ampstatus(ampState = None):
     ''' Query MPS microwave amplifier status
 
     +---------+----------------------+
-    |lockState|Description           |
+    |ampState |Description           |
     +=========+======================+
     |0        |Amplifier Off         |
     +---------+----------------------+
