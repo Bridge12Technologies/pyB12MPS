@@ -116,27 +116,27 @@ def debug(debugMode = None):
         debugMode = int(debugModeString)
         return debugMode
 
-def detectArduinoSerialPort():
-    '''Return the serial port for the Arduino
+def detectMPSSerialPort():
+    '''Return the serial port for the MPS
 
     Returns:
-        str: Arduino serial port. If Arduino serial port is not found, uses the default serial port.
+        str: MPS serial port. If MPS serial port is not found, uses the default serial port.
     '''
 
     print('Automatically Detecting Serial Port...')
     ports = list(serial.tools.list_ports.comports())
-    arduinoDetected = False
+    MPSDetected = False
     for p in ports:
         print(p)
-        if 'Arduino' in p.description:
-            arduinoDetected = True
-            arduinoPort = p.device
-            print('MPS Detected on port %s'%(arduinoPort))
-    if arduinoDetected:
-        serialPort = arduinoPort
+        if (p.vid == 9025 or p.vid == 10755):
+            MPSDetected = True
+            MPSPort = p.device
+            print('MPS Detected on port %s'%(MPSPort))
+    if MPSDetected:
+        serialPort = MPSPort
     else:
-        print('No MPS automatically detected. Trying %s instead (default COM port)'%(defaultSerialPort))
-        serialPort = defaultSerialPort 
+        print('Automatic detection failed.')
+        serialPort = None
     return serialPort
 
 def firmware():
@@ -749,7 +749,7 @@ def set_port(port):
     global PORT
     PORT = port
 
-def start(serialPort = None, host = None, port = None):
+def start(serialPort = None, host = None, port = None, debug = False):
 
     '''Start python TCP server
 
@@ -768,17 +768,15 @@ def start(serialPort = None, host = None, port = None):
     global HOST
     global PORT
 
-    serverScriptFilename = '__main__.py'
-    serverScriptDir = os.path.join(dir_path,serverScriptFilename)
-
     args = []
     if serialPort is not None:
         args += [serialPort]
     elif autoDetectSerialPort:
-        serialPort =  detectArduinoSerialPort()
+        serialPort =  detectMPSSerialPort()
+        if serialPort == None:
+            print('\nCannot automatically connect to MPS.\nPlease specify COM Port manually.')
+            return
         args += [serialPort]
-    else:
-        args += [defaultSerialPort]
 
     if host is None:
         host = HOST
@@ -798,10 +796,18 @@ def start(serialPort = None, host = None, port = None):
     print('-------------------------')
     print()
 
-    p = subprocess.Popen([sys.executable, serverScriptDir] + args, 
-                                stdout=subprocess.PIPE, 
-                                stderr=subprocess.STDOUT)
-
+    if debug == True:
+        print('Starting Subprocess')
+        p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.STDOUT,
+                                    shell = True,
+                                    creationflags = subprocess.DETACHED_PROCESS)
+    else:
+        p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.STDOUT)
+    
     print('Server starting...')
 
     serverErrorIndicator = test()

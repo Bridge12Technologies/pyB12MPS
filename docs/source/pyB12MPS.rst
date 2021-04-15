@@ -2,7 +2,7 @@
 pyB12MPS Module
 ===============
 
-In this section the functions of the B12MPS module are explained. In general, most functions can be used to query a parameter, while some functions can query and set (send) a value to the MPS.
+In this section the functions of the pyB12MPS module are explained. In general, most functions can be used to query a parameter, while some functions can query and set (send) a value to the MPS.
 
 For example the command::
 
@@ -26,16 +26,14 @@ Example - pyB12MPS Module
 
 ::
 
-    import B12MPS as mps
+    import pyB12MPS as mps
 
-    serverTest = mps.test()
-
-    if serverTest != 0:
-        mps.start()
+    if mps.test(): # if server is not running, start server
+        mps.start(debug = True)
 
     mps.freq(9.6) # Set microwave frequency to 9.6 GHz
 
     mps.power(10) # Set microwave power to 10 dBm
 
-    mps.stop()
+    mps.stop() # Stop the server
 

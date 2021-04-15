@@ -87,6 +87,10 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
         recv_string = recv_bytes.decode('utf-8').rstrip()
         print('Received string: %s'%recv_string)
 
+        if recv_string == '':
+            print('Server test completed.')
+            return
+
         ### special commands for serial port ###
         if recv_string == '_flush_':
             print('Flushing Buffer')
@@ -142,13 +146,11 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
                 bytes_in_buffer = self.server.ser.in_waiting
                 if bytes_in_buffer > 0:
                     from_mps_bytes = self.server.ser.read(bytes_in_buffer)
-                    from_mps_string = from_mps_bytes.decode('uft-8').rstrip()
+                    from_mps_string = from_mps_bytes.decode('utf-8').rstrip()
                     print('Unsolicited Response: ' + from_mps_string)
 
         else:
             print('Invalid Command')
-
-
 
 print('Starting Server...')
 server = MPSTCPServer((HOST, PORT), MPSTCPHandler)

@@ -3,9 +3,13 @@ import setuptools
 with open('README.md','r') as f:
     long_description = f.read()
 
+with open("pyB12MPS/version.py", "r") as f:
+    # Define __version__
+    exec(f.read())
+
 setuptools.setup(
     name='pyB12MPS',
-    version='1.0.8',
+    version=__version__,
     author='Bridge12 Technologies, Inc',
     author_email='tkeller@bridge12.com',
     description='A Python Package for Interfacing with the Bridge12 MPS',
