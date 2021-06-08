@@ -943,6 +943,24 @@ def test():
     s.close()
     return serverErrorIndicator
 
+def trig():
+    '''Instructs MPS to send Trigger pulse
+    '''
+    send_command('trig')
+
+def triglength(length = None):
+    '''Set trigger length in us
+    '''
+    if length is None:
+        length = send_command('triglength?', recv = True)
+        length = int(length)
+        return length
+    else:
+        if (length > 0) and (length <= 10000000):
+            send_command('triglength %i'%length)
+        else:
+            raise ValueError('Trigger Length must be less than or equal to 10 seconds.')
+
 def txdiodesn():
     '''Query serial number of Tx diode
     
