@@ -131,6 +131,11 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
 
         elif hasattr(self.server, 'ser'):
             print('Sending to MPS: ' + recv_string)
+            bytes_in_buffer = self.server.ser.in_waiting
+            if bytes_in_buffer > 0:
+                from_mps_bytes = self.server.ser.read(bytes_in_buffer)
+                from_mps_string = from_mps_bytes.decode('utf-8').rstrip()
+                print('Unsolicited Response: ' + from_mps_string)
 
             self.server.ser.write(recv_bytes)
 
