@@ -944,12 +944,29 @@ def test():
     return serverErrorIndicator
 
 def trig():
-    '''Instructs MPS to send Trigger pulse
+    '''Output Trigger pulse from MPS
+
+    Example::
+
+        trig()
+
     '''
     send_command('trig')
 
 def triglength(length = None):
-    '''Set trigger length in us
+    '''Set/Query trigger pulse length in us
+
+    Args:
+        length (None, float, int): If given, the length of the trigger pulse in us. If None, queries the trigger pulse length.
+
+    Returns:
+        (int) trigger pulse length in us.
+
+    Example::
+
+        triglength(100) # Set trigger pulse length to 100 us
+        triglength() # query the trigger pulse length
+
     '''
     if length is None:
         length = send_command('triglength?', recv = True)
