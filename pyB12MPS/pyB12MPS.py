@@ -46,7 +46,7 @@ def ampstatus(ampState = None):
     ''' Query MPS microwave amplifier status
 
     +---------+----------------------+
-    |lockState|Description           |
+    |ampState |Description           |
     +=========+======================+
     |0        |Amplifier Off         |
     +---------+----------------------+
@@ -942,6 +942,41 @@ def test():
     serverErrorIndicator = s.connect_ex((HOST,PORT))
     s.close()
     return serverErrorIndicator
+
+def trig():
+    '''Output Trigger pulse from MPS
+
+    Example::
+
+        trig()
+
+    '''
+    send_command('trig')
+
+def triglength(length = None):
+    '''Set/Query trigger pulse length in us
+
+    Args:
+        length (None, float, int): If given, the length of the trigger pulse in us. If None, queries the trigger pulse length.
+
+    Returns:
+        (int) trigger pulse length in us.
+
+    Example::
+
+        triglength(100) # Set trigger pulse length to 100 us
+        triglength() # query the trigger pulse length
+
+    '''
+    if length is None:
+        length = send_command('triglength?', recv = True)
+        length = int(length)
+        return length
+    else:
+        if (length > 0) and (length <= 10000000):
+            send_command('triglength %i'%length)
+        else:
+            raise ValueError('Trigger Length must be less than or equal to 10 seconds.')
 
 def txdiodesn():
     '''Query serial number of Tx diode
