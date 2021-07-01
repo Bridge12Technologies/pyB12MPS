@@ -798,16 +798,26 @@ def start(serialPort = None, host = None, port = None, debug = False):
 
     if debug == True:
         print('Starting Subprocess')
-        p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
-                                    stdout=subprocess.PIPE, 
-                                    stderr=subprocess.STDOUT,
-                                    shell = True,
-                                    creationflags = subprocess.DETACHED_PROCESS)
+        if os.name == 'nt':
+            p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
+                                        stdout=subprocess.PIPE, 
+                                        stderr=subprocess.STDOUT,
+                                        shell = True,
+                                        creationflags = subprocess.DETACHED_PROCESS)
+        else:
+            p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
+                                        stdout=subprocess.PIPE,
+                                        start_new_session = True)
+
     else:
-        p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
-                                    stdout=subprocess.PIPE, 
-                                    stderr=subprocess.STDOUT)
-    
+        if os.name == 'nt':
+            p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
+                                        stdout=subprocess.PIPE, 
+                                        stderr=subprocess.STDOUT)
+        else:
+            p = subprocess.Popen([sys.executable, '-m', 'pyB12MPS'] + args, 
+                                        stdout=subprocess.PIPE)
+        
     print('Server starting...')
 
     serverErrorIndicator = test()
@@ -815,12 +825,12 @@ def start(serialPort = None, host = None, port = None, debug = False):
 
     while (serverErrorIndicator != 0):
         
-        time.sleep(0.1)
+        time.sleep(1.)
         serverErrorIndicator = test()
         print('Server Error Code: %s'%serverErrorIndicator)
         errorCounter += 1
 
-        if (p.poll() is not None) or (errorCounter >= 50):
+        if (p.poll() is not None) or (errorCounter >= 5):
             print()
             print('Server failed to start.')
             print()
