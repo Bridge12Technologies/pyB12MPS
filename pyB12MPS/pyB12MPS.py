@@ -721,16 +721,14 @@ def send_command(command, recv = False):
     # serial delay
     time.sleep(serialDelay)
 
-    if recv:
-        recv_bytes = s.recv(1024)
-        recv_string = recv_bytes.decode('utf-8')
-        recv_string = recv_string.rstrip()
+    recv_bytes = s.recv(1024)
+    recv_string = recv_bytes.decode('utf-8')
+    recv_string = recv_string.rstrip()
 
-        s.close()
+    s.close()
 
-        return recv_string
-    else:
-        s.close()
+
+    return recv_string
 
 def serialNumber():
     '''Query serial number of MPS
