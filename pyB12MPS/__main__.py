@@ -139,20 +139,16 @@ class MPSTCPHandler(SocketServer.BaseRequestHandler):
 
             self.server.ser.write(recv_bytes)
 
+            from_mps_bytes = self.server.ser.readline()
+            from_mps_string = from_mps_bytes.decode('utf-8').rstrip()
             # if query
             if recv_string[-1] == '?':
                 # Read the serial data
-                from_mps_bytes = self.server.ser.readline()
-                from_mps_string = from_mps_bytes.decode('utf-8').rstrip()
                 print('Query Detected, sending to client: ' + from_mps_string)
                 self.request.sendall(from_mps_bytes)
-            # if non-query, check for bytes in buffer (checking for 'ERROR\n')
+            # if non-query, respond with error code
             else:
-                bytes_in_buffer = self.server.ser.in_waiting
-                if bytes_in_buffer > 0:
-                    from_mps_bytes = self.server.ser.read(bytes_in_buffer)
-                    from_mps_string = from_mps_bytes.decode('utf-8').rstrip()
-                    print('Unsolicited Response: ' + from_mps_string)
+                print('Response: ' + from_mps_string)
 
         else:
             print('Invalid Command')
