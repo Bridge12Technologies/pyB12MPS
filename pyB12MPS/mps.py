@@ -24,6 +24,10 @@ class MPS:
             from_mps_string = from_mps_bytes.decode('utf-8').rstrip()
             print(from_mps_string)
 
+        # Catch "Synthesizer detected"
+        time.sleep(1)
+        self.flush()
+
     def ampgain(self, gain = None):
         '''Advanced feature to adjust gain for calibration of MPS
 
