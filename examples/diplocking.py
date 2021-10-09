@@ -16,20 +16,19 @@ print(f"before first run:\n\tpower {mps.rfsweeppower()}",
     f"freq {mps.freq()}",
     f"initial dwell {mps.rfsweepinitialdwelltime()}",
     f"SW {mps.rfsweepsw()}")
-#mps.rfsweepdosweep()
-for j in range(20):
-    data = mps.rfsweepdata()
-    print(data)
-#mps.freq(typical_range.mean().item()+0.005)
-#print(f"before second run:\n\tpower {mps.rfsweeppower()}",
-#    f"points {mps.rfsweepnpts()}",
-#    f"dw {mps.rfsweepdwelltime()}",
-#    f"freq {mps.freq()}",
-#    f"initial dwell {mps.rfsweepinitialdwelltime()}",
-#    f"SW {mps.rfsweepsw()}")
-#mps.rfsweepdosweep()
-#data2 = mps.rfsweepdata()
-plot(data)
+mps.rfsweepdosweep()
+data1 = mps.rfsweepdata()
+mps.freq(typical_range.mean().item()+0.005)
+print(f"before second run:\n\tpower {mps.rfsweeppower()}",
+    f"points {mps.rfsweepnpts()}",
+    f"dw {mps.rfsweepdwelltime()}",
+    f"freq {mps.freq()}",
+    f"initial dwell {mps.rfsweepinitialdwelltime()}",
+    f"SW {mps.rfsweepsw()}")
+mps.rfsweepdosweep()
+data2 = mps.rfsweepdata()
+plot(data1)
+plot(data2)
 mps.stop()
 show()
 
