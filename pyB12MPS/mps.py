@@ -186,7 +186,7 @@ class MPS:
             return return_freq
 
     def id(self):
-        '''Query the instrument identificationstring of MPS
+        '''Query the instrument identification string of MPS
 
         Returns:
             idString (str): ID of instrument: "Bridge12 MPS"
