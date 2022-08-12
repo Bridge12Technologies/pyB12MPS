@@ -687,10 +687,11 @@ class MPS:
         self.ser.write(send_bytes)
 
         # read bytes from MPS
-        from_mps_bytes = self.ser.readline()
-        from_mps_string = from_mps_bytes.decode('utf-8').rstrip()
+        if recv == True:
+            from_mps_bytes = self.ser.readline()
+            from_mps_string = from_mps_bytes.decode('utf-8').rstrip()
 
-        return from_mps_string
+            return from_mps_string
 
     def serialNumber(self):
         '''Query serial number of MPS
