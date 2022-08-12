@@ -10,3 +10,5 @@ mps.freq(9.75) # set frequency to 9.75 GHz
 mps.power(5) # set power to 5 dBm
 
 mps.close() # close connection to MPS
+
+del mps # delete class
