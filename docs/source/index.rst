@@ -38,7 +38,6 @@ Features
    install
    quick-start
    pyB12MPS
-   pyB12MPS-Server
    troubleshooting
 
 Indices and tables
