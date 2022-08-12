@@ -6,9 +6,7 @@ Quick-Start Guide
 Overview
 --------
 
-The pyB12MPS python package consists of a python server module
-:doc:`pyB12MPS Server <pyB12MPS-Server>`
-and a python client module
+The pyB12MPS package consists of an MPS Class:
 :doc:`pyB12MPS Module <pyB12MPS>`.
 
 The python server establishes a socket connection to the MPS. The server must be running in the background for the client module to send commands to the Bridge12 MPS. Instructions for a user to remote control the Bridge12 MPS from a terminal window are summarized in section :ref:`Sec_Communicating_with_MPS`.
@@ -36,11 +34,11 @@ Now you can import the pyB12MPS module and start the server in the background
 
 .. code-block:: python
 
-    import pyB12MPS as mps
+    import pyB12MPS
 
-    mps.start()
+    mps = pyB12MPS.MPS()
 
-The pyB12MPS module will open a socket to the Bridge12 MPS in the background. The unit will reset and after initialization return to the main screen. Once the main screen is displayed, the Bridge12 MPS is ready to receive commands from the terminal. In most terminal applications you have to hit the return key once to get back to the prompt.
+The pyB12MPS module contains the MPS class. When the MPS class is initialized, a serial port is opened to communicate with the MPS.
 
 There are two types of commands that you can send to the Bridge12 MPS, queries and set commands. In general, queries will have no argumnets, while a set command requires an argument. For example to query the frequency
 
@@ -63,25 +61,12 @@ To close the connection to the Bridge12 MPS send this command
 
 .. code-block:: python
 
-    mps.stop()
-    Communication with MPS stopped
+    mps.close()
+    # closes the serial port and stops communication with the MPS
+    del mps
+    # deletes the instance of the class
 
-This will stop the serial communication with the system and close the serial socket server, which is running in the background.
-
-.. warning::
-    When using pyB12MPS on Mac or Linux, do not just close the terminal window to terminate the program. This will not stop the server in the background and you will not be able to start the server successfully again.
-    If the window is closed accidentally, you need to manually kill the python process that runs the socket server.
-
-    On Mac/Linux: In a terminal window type:
-    
-        .. code-block:: console
-
-            ps
-        
-    to get a list of the active processes. Identify the python process and use the kill command with the PID to kill the corresponding process.
-
-    On Windows: The python process can be terminated by opening the Task Manager, selecting the python process and clicking the "End task" button.
-
+This will stop the serial communication with the system.
 
 Sending MPS Commands
 -----------------------
@@ -130,12 +115,11 @@ Example Script - Reading Diode Voltage
 
 .. code-block:: python
 
-    import pyB12MPS as mps
+    import pyB12MPS
     import time
 
-    # Test if server is running
-    if mps.test(): # 0 indicates normal operation of server
-        mps.start(debug = True)
+    # Initialize MPS Class
+    mps = pyB12MPS.MPS()
 
     # Number of Rx voltage points to acquire
     pts = 10
