@@ -22,28 +22,25 @@ In a terminal window, start a python environment
 python
 ```
 
-To start the MPS Server:
-
 ```python
-import pyB12MPS as mps
+import pyB12MPS
 
-mps.start()
+mps = pyB12MPS.MPS()
 ```
 
-The MPS will reset and the python environment will hang until the connection has been established. The server will run in the background until the stop command is sent.
+The MPS will reset and the python environment will hang until the MPS has initialized.
 
-To stop the MPS Server:
+To close the MPS serial port:
 
 ```
-mps.stop()
+mps.close()
 ```
 
 ### Sending MPS Commands ###
 
-Once the connection has been established, you can use a python terminal or script to send commands to the MPS.
+Once the connection has been established, you can send commands to the MPS.
 
 ```python
-import pyB12MPS as mps
 
 mps.freq(9.4) # set frequency to 9.4 GHz
 
@@ -53,12 +50,10 @@ mps.freq() # Query the microwave frequency in GHz
 ### Example Script ###
 
 ```python
-import pyB12MPS as mps
+import pyB12MPS
 import time
 
-# Test if server is running
-if mps.test(): # 0 indicates normal operation of server
-    mps.start(debug = True)
+mps = pyB12MPS.MPS()
 
 # Number of Rx voltage points to acquire
 pts = 10
