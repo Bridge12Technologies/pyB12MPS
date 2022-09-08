@@ -89,6 +89,41 @@ class MPS:
         ampTemp = float(ampTempString) / 10.
         return ampTemp
 
+    def b12teprstatus(self, status = None):
+        '''Enable/Disable or Query B12T EPR status
+
+        Args:
+            status: 0 to disable B12TEPR status, 1 to enable B12TEPR status, None to query
+
+        Returns:
+            int: If status is None, returns the current status of B12T EPR mode
+        '''
+
+        if status in (0, 1):
+            self.send_command('b12teprstatus ' + str(int(status)))
+
+        elif status is None:
+            return self.send_command('b12teprstatus?', recv = True)
+        else:
+            raise ValueError('Invalid b12teprstatus')
+
+    def b12teprhpamp(self, enable = None):
+        '''Enable/Disable
+
+        Args:
+            enable: 0 to disable HP Amp EPR mode, 1 to enable HP Amp EPR mode, None to query
+
+        Returns:
+            int: If enable is None, returns the current status of the HP Amp EPR mode
+        '''
+
+        if enable in (0, 1):
+            self.send_command('b12teprhpamp ' + str(int(enable)))
+        elif enable is None:
+            return self.send_command('b12teprhpamp?', recv = True)
+        else:
+            raise ValueError('Invalid b12teprhpamp')
+
 
     def close(self):
         '''Close serial port
@@ -137,6 +172,7 @@ class MPS:
             print('Automatic detection failed.')
             serialPort = None
         return serialPort
+
 
     def firmware(self):
         '''Query the MPS firmware version
