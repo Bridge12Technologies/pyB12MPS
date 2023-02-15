@@ -194,15 +194,6 @@ class MPS:
         idString = self.send_command('id?',recv = True)
         return idString
 
-    def in_waiting(self):
-        '''Return bytes in MPS serial port
-
-        Returns:
-            value (int): number of bytes at serial port
-        '''
-
-        return self.ser.in_waiting
-
     def listPorts(self):
         '''List the serial ports available. This function is for troubleshooting when the serial port of the MPS is unknown.
 
