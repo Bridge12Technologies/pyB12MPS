@@ -194,7 +194,7 @@ class MPS:
         idString = self.send_command('id?',recv = True)
         return idString
 
-    def listPorts(self):
+    def listports(self):
         '''List the serial ports available. This function is for troubleshooting when the serial port of the MPS is unknown.
 
         Returns:
@@ -202,7 +202,7 @@ class MPS:
 
         Example::
 
-            portsAvailable = listPorts() # Return Dictionary of Serial Ports Available
+            portsAvailable = listports() # Return Dictionary of Serial Ports Available
         '''
 
         portsAvailable = {}
