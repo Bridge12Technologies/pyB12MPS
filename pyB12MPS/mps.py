@@ -684,11 +684,11 @@ class MPS:
 
             return from_mps_string
 
-    def serialNumber(self):
+    def serialnumber(self):
         '''Query serial number of MPS
 
         Returns:
-            serialNumber (str): Serial number string of MPS
+            serialnumber (str): Serial number string of MPS
         '''
         serialNumberString = self.send_command('serial?',recv = True)
         return serialNumberString
