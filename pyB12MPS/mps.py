@@ -115,7 +115,7 @@ class MPS:
             debugMode = int(debugModeString)
             return debugMode
 
-    def detectMPSSerialPort(self):
+    def detectmpsserialport(self):
         '''Return the serial port for the MPS
 
         Returns:
