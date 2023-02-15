@@ -9,7 +9,7 @@ import serial.tools.list_ports
 class MPS:
     def __init__(self, port = None):
         if port == None:
-            self.port = self.detectMPSSerialPort()
+            self.port = self.detectmpsserialport()
 
         self.init()
 
