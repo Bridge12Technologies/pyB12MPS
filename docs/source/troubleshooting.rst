@@ -10,5 +10,5 @@ The MPS serial port should automatically be detected. If automatic detection fai
 
 .. code-block:: python
     
-    mps = MPS('COM3')
+    mps = pyB12MPS.MPS('COM3')
 

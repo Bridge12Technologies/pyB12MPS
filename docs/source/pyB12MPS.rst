@@ -34,5 +34,5 @@ Example - pyB12MPS Module
 
     mps.power(10) # Set microwave power to 10 dBm
 
-    mps.stop() # Stop the server
+    mps.close() # Stop the server
 
