@@ -27,7 +27,6 @@ Features
 ========
 
 * Control the Bridge12 MPS from a terminal window (Win, Mac or Linux)
-* Server Program to initialize serial communication
 * Query/Set any commands accessible through the serial interface
 
 .. toctree::
@@ -38,7 +37,6 @@ Features
    install
    quick-start
    pyB12MPS
-   pyB12MPS-Server
    troubleshooting
 
 Indices and tables
