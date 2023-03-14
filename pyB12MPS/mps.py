@@ -78,6 +78,7 @@ class MPS:
             ampState = int(ampStateString)
             return ampState
 
+
     def amptemp(self):
         ''' Query the MPS amplifier temperature
 
@@ -578,7 +579,7 @@ class MPS:
         '''Query the Rx diode reading in dBm
 
         Returns:
-            rxPower (float): Reciever monitor power reading in dBm
+            rxPower (float): Receiver monitor power reading in dBm
 
         Example::
 
