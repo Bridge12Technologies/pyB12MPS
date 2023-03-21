@@ -874,11 +874,11 @@ class MPS:
         '''
         if calibration is not None:
             if calibration in (0,1):
-                self.send_command('cali %i'%calibration)
+                self.send_command('calibration %i'%calibration)
             else:
                 raise ValueError('Calibration Mode Not Valid')
         else:
-            CalibrationReadingString = self.send_command('cali?',recv = True)
+            CalibrationReadingString = self.send_command('calibration?',recv = True)
             CalibrationReading = int(CalibrationReadingString)
             return CalibrationReading
         
