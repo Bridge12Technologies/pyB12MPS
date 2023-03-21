@@ -846,6 +846,56 @@ class MPS:
             wgStatusReadingString = self.send_command('wgstatus?',recv = True)
             wgStatusReading = int(wgStatusReadingString)
             return wgStatusReading
+        
+    def calibration(self, calibration = None):
+        ''' Set/Query the calibration mode status
+
+        +--------+-----------------------------------+
+        |wgStatus|Description                        |
+        +========+===================================+
+        |0       |Disable Calibration Mode           |
+        +--------+-----------------------------------+
+        |1       |Enable Calibration Mode            |
+        +--------+-----------------------------------+
+
+        Args:
+            calibration (None, int): calibration mode value
+
+        Returns:
+            calibration (int): If Calibration is not None, returns queried calibration mode status
+
+        Example::
+
+            calibration = calibration() # Query the Waveguide State
+
+            calibration(0) # Switch off Calibration Mode
+            calibration(1) # Switch on Calibration Mode
+
+        '''
+        if calibration is not None:
+            if calibration in (0,1):
+                self.send_command('cali %i'%calibration)
+            else:
+                raise ValueError('Calibration Mode Not Valid')
+        else:
+            CalibrationReadingString = self.send_command('cali?',recv = True)
+            CalibrationReading = int(CalibrationReadingString)
+            return CalibrationReading
+        
+    def interpgain(self):
+        ''' Query the intepolated gain offset in dBm from calibration data
+
+        Returns:
+            interpGain (float): Intepolated gain offset in dBm
+
+        Example::
+
+            interpGain = interpgain() # Query the intepolated gain offset
+
+        '''
+        return_interpgain_tenth_dbm = self.send_command('interpgain?',recv = True)
+        interpGain = float(return_interpgain_tenth_dbm) / 10. # convert to mV
+        return interpGain
 
 if __name__ == '__main__':
     pass
