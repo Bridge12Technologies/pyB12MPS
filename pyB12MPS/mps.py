@@ -107,10 +107,10 @@ class MPS:
         '''
 
         if debugMode is not None:
-            if debugMode in (0,1):
+            if debugMode in (0,1,2):
                 self.send_command('debug %i'%debugMode)
             else:
-                raise ValueError('Debug mode must be 0 or 1')
+                raise ValueError('Debug mode must be 0, 1 or 2')
         else:
             debugModeString = self.send_command('debug?', recv = True)
             debugMode = int(debugModeString)
