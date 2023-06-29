@@ -496,7 +496,7 @@ class MPS:
             if not isinstance(dwellTime, (int, float)):
                 raise ValueError("Value must be an int")
             dwellTimeString = str(dwellTime)
-            self.send_command("rfsweepdwelltime %s" % dwellTimeString)
+            send_command('rfsweepdwelltime %s'%dwellTimeString)
         else:
             dwellTimeString = self.send_command("rfsweepdwelltime?", recv=True)
             dwellTime = float(dwellTimeString)
@@ -850,6 +850,5 @@ class MPS:
             wgStatusReading = int(wgStatusReadingString)
             return wgStatusReading
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     pass
