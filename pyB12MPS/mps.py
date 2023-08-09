@@ -104,10 +104,10 @@ class MPS:
         """
 
         if debugMode is not None:
-            if debugMode in (0, 1):
+            if debugMode in (0, 1, 2):
                 self.send_command("debug %i" % debugMode)
             else:
-                raise ValueError("Debug mode must be 0 or 1")
+                raise ValueError("Debug mode must be 0, 1 or 2")
         else:
             debugModeString = self.send_command("debug?", recv=True)
             debugMode = int(debugModeString)
@@ -496,7 +496,7 @@ class MPS:
             if not isinstance(dwellTime, (int, float)):
                 raise ValueError("Value must be an int")
             dwellTimeString = str(dwellTime)
-            send_command("rfsweepdwelltime %s" % dwellTimeString)
+            send_command('rfsweepdwelltime %s'%dwellTimeString)
         else:
             dwellTimeString = self.send_command("rfsweepdwelltime?", recv=True)
             dwellTime = float(dwellTimeString)
@@ -850,56 +850,5 @@ class MPS:
             wgStatusReading = int(wgStatusReadingString)
             return wgStatusReading
 
-    def calibration(self, calibration=None):
-        """Set/Query the calibration mode status
-
-        +--------+-----------------------------------+
-        |wgStatus|Description                        |
-        +========+===================================+
-        |0       |Disable Calibration Mode           |
-        +--------+-----------------------------------+
-        |1       |Enable Calibration Mode            |
-        +--------+-----------------------------------+
-
-        Args:
-            calibration (None, int): calibration mode value
-
-        Returns:
-            calibration (int): If Calibration is not None, returns queried calibration mode status
-
-        Example::
-
-            calibration = calibration() # Query the Waveguide State
-
-            calibration(0) # Switch off Calibration Mode
-            calibration(1) # Switch on Calibration Mode
-
-        """
-        if calibration is not None:
-            if calibration in (0, 1):
-                self.send_command("calibration %i" % calibration)
-            else:
-                raise ValueError("Calibration Mode Not Valid")
-        else:
-            CalibrationReadingString = self.send_command("calibration?", recv=True)
-            CalibrationReading = int(CalibrationReadingString)
-            return CalibrationReading
-
-    def interpgain(self):
-        """Query the intepolated gain offset in dBm from calibration data
-
-        Returns:
-            interpGain (float): Intepolated gain offset in dBm
-
-        Example::
-
-            interpGain = interpgain() # Query the intepolated gain offset
-
-        """
-        return_interpgain_tenth_dbm = self.send_command("interpgain?", recv=True)
-        interpGain = float(return_interpgain_tenth_dbm) / 10.0  # convert to mV
-        return interpGain
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     pass
