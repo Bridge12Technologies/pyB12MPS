@@ -901,5 +901,21 @@ class MPS:
             return CalibrationReading
 
 
+    def interpgain(self):
+        """Query the intepolated gain offset in dBm from calibration data
+
+        Returns:
+            interpGain (float): Intepolated gain offset in dBm
+
+        Example::
+
+            interpGain = interpgain() # Query the intepolated gain offset
+
+        """
+        return_interpgain_tenth_dbm = self.send_command("interpgain?", recv=True)
+        interpGain = float(return_interpgain_tenth_dbm) / 10.0  # convert to mV
+        return interpGain
+
+
 if __name__ == "__main__":
     pass
