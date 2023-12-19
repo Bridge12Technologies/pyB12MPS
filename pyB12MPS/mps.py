@@ -496,7 +496,7 @@ class MPS:
             if not isinstance(dwellTime, (int, float)):
                 raise ValueError("Value must be an int")
             dwellTimeString = str(dwellTime)
-            self.send_command('rfsweepdwelltime %s'%dwellTimeString)
+            self.send_command("rfsweepdwelltime %s" % dwellTimeString)
         else:
             dwellTimeString = self.send_command("rfsweepdwelltime?", recv=True)
             dwellTime = float(dwellTimeString)
@@ -849,22 +849,57 @@ class MPS:
             wgStatusReadingString = self.send_command("wgstatus?", recv=True)
             wgStatusReading = int(wgStatusReadingString)
             return wgStatusReading
-       
-    def __del__(self):                   # If mps object is deleted
-    
-        if self.ser.is_open:             # In case mps object is deleted but was not closed beforehand 
-            
-            #Turn everything off and close the connection (does NOT replace properly closing everything in your script)
-            self.lockstatus(0)           # Turn off the MPS frequency softlock
-            time.sleep(0.1)
-            self.power(-99)              # Set MW power to 0
-            time.sleep(0.1)
-            self.rfstatus(0)             # Turn off MW
-            time.sleep(0.1)
-            self.wgstatus(0)             # Switch to EPR mode
-            time.sleep(0.1)
-            self.close()                 # Closes the serial port
-        
 
-if __name__ == '__main__':
+    def __del__(self):  # If mps object is deleted
+        if (
+            self.ser.is_open
+        ):  # In case mps object is deleted but was not closed beforehand
+            # Turn everything off and close the connection (does NOT replace properly closing everything in your script)
+            self.lockstatus(0)  # Turn off the MPS frequency softlock
+            time.sleep(0.1)
+            self.power(-99)  # Set MW power to 0
+            time.sleep(0.1)
+            self.rfstatus(0)  # Turn off MW
+            time.sleep(0.1)
+            self.wgstatus(0)  # Switch to EPR mode
+            time.sleep(0.1)
+            self.close()  # Closes the serial port
+
+    def calibration(self, calibration=None):
+        """Set/Query the calibration mode status
+
+        +--------+-----------------------------------+
+        |wgStatus|Description                        |
+        +========+===================================+
+        |0       |Disable Calibration Mode           |
+        +--------+-----------------------------------+
+        |1       |Enable Calibration Mode            |
+        +--------+-----------------------------------+
+
+        Args:
+            calibration (None, int): calibration mode value
+
+        Returns:
+            calibration (int): If Calibration is not None, returns queried calibration mode status
+
+        Example::
+
+            calibration = calibration() # Query the Waveguide State
+
+            calibration(0) # Switch off Calibration Mode
+            calibration(1) # Switch on Calibration Mode
+
+        """
+        if calibration is not None:
+            if calibration in (0, 1):
+                self.send_command("calibration %i" % calibration)
+            else:
+                raise ValueError("Calibration Mode Not Valid")
+        else:
+            CalibrationReadingString = self.send_command("calibration?", recv=True)
+            CalibrationReading = int(CalibrationReadingString)
+            return CalibrationReading
+
+
+if __name__ == "__main__":
     pass
