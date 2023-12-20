@@ -949,21 +949,6 @@ class MPS:
             writeeeprom(64, 'uint32_t', 9000000) # Set the minimum frequency to eeprom at address 64.
         """
 
-        if data_type in [
-            "int8_t",
-            "int16_t",
-            "int32_t",
-        ]:  # convert signed integer to the unsigned interger
-            bit = ""
-            for c in data_type:
-                if c.isdigit():
-                    bit += c
-            
-            if data < 0:
-                data += 2 ** int(bit)
-                
-            data_type = "u" + data_type
-
         if data_type in ["char"]:
             self.send_command("write %i %s %s" % (address, data_type, data), recv=True)
 
@@ -971,8 +956,11 @@ class MPS:
             "bool",
             "boolean",
             "uint8_t",
+            "int8_t",
             "uint16_t",
+            "int16_t",
             "uint32_t",
+            "int32_t",
         ]:
             self.send_command("write %i %s %i" % (address, data_type, data), recv=True)
 
