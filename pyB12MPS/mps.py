@@ -496,7 +496,7 @@ class MPS:
             if not isinstance(dwellTime, (int, float)):
                 raise ValueError("Value must be an int")
             dwellTimeString = str(dwellTime)
-            self.send_command('rfsweepdwelltime %s'%dwellTimeString)
+            self.send_command("rfsweepdwelltime %s" % dwellTimeString)
         else:
             dwellTimeString = self.send_command("rfsweepdwelltime?", recv=True)
             dwellTime = float(dwellTimeString)
@@ -849,22 +849,127 @@ class MPS:
             wgStatusReadingString = self.send_command("wgstatus?", recv=True)
             wgStatusReading = int(wgStatusReadingString)
             return wgStatusReading
-       
-    def __del__(self):                   # If mps object is deleted
-    
-        if self.ser.is_open:             # In case mps object is deleted but was not closed beforehand 
-            
-            #Turn everything off and close the connection (does NOT replace properly closing everything in your script)
-            self.lockstatus(0)           # Turn off the MPS frequency softlock
-            time.sleep(0.1)
-            self.power(-99)              # Set MW power to 0
-            time.sleep(0.1)
-            self.rfstatus(0)             # Turn off MW
-            time.sleep(0.1)
-            self.wgstatus(0)             # Switch to EPR mode
-            time.sleep(0.1)
-            self.close()                 # Closes the serial port
-        
 
-if __name__ == '__main__':
+    def __del__(self):  # If mps object is deleted
+        if (
+            self.ser.is_open
+        ):  # In case mps object is deleted but was not closed beforehand
+            # Turn everything off and close the connection (does NOT replace properly closing everything in your script)
+            self.lockstatus(0)  # Turn off the MPS frequency softlock
+            time.sleep(0.1)
+            self.power(-99)  # Set MW power to 0
+            time.sleep(0.1)
+            self.rfstatus(0)  # Turn off MW
+            time.sleep(0.1)
+            self.wgstatus(0)  # Switch to EPR mode
+            time.sleep(0.1)
+            self.close()  # Closes the serial port
+
+    def calibration(self, calibration=None):
+        """Set/Query the calibration mode status
+
+        +--------+-----------------------------------+
+        |wgStatus|Description                        |
+        +========+===================================+
+        |0       |Disable Calibration Mode           |
+        +--------+-----------------------------------+
+        |1       |Enable Calibration Mode            |
+        +--------+-----------------------------------+
+
+        Args:
+            calibration (None, int): calibration mode value
+
+        Returns:
+            calibration (int): If Calibration is not None, returns queried calibration mode status
+
+        Example::
+
+            calibration = calibration() # Query the Waveguide State
+
+            calibration(0) # Switch off Calibration Mode
+            calibration(1) # Switch on Calibration Mode
+
+        """
+        if calibration is not None:
+            if calibration in (0, 1):
+                self.send_command("calibration %i" % calibration)
+            else:
+                raise ValueError("Calibration Mode Not Valid")
+        else:
+            CalibrationReadingString = self.send_command("calibration?", recv=True)
+            CalibrationReading = int(CalibrationReadingString)
+            return CalibrationReading
+
+    def interpgain(self):
+        """Query the intepolated gain offset in dBm from calibration data
+
+        Returns:
+            interpGain (float): Intepolated gain offset in dBm
+
+        Example::
+
+            interpGain = interpgain() # Query the intepolated gain offset
+
+        """
+        return_interpgain_tenth_dbm = self.send_command("interpgain?", recv=True)
+        interpGain = float(return_interpgain_tenth_dbm) / 10.0  # convert to mV
+        return interpGain
+
+    def readeeprom(self, address, data_type):
+        """
+        Read data with specific data type to the given address
+
+        Args:
+            address (int): the address in the EEPROM
+            data_type (str): the data type stored in the EEPROM at the given address
+
+        Returns:
+            data (str): The read data from EEPROM
+
+        Example::
+
+            data = readeeprom(16, 'char') # Query the MPS Header that stored in the address 16.
+        """
+
+        return_data = self.send_command("read %i %s" % (address, data_type), recv=True)
+
+        return return_data
+
+    def writeeeprom(self, address, data_type, data):
+        """
+        Write data with specific data type to the given address.
+
+        Args:
+            address (int): the address in the EEPROM
+            data_type (str): the data type stored in the EEPROM at the given address
+            data (int, str): the data written to the EEPROM
+
+        Example::
+
+            writeeeprom(64, 'uint32_t', 9000000) # Set the minimum frequency to eeprom at address 64.
+        """
+
+        if data_type in ["char"]:
+            self.send_command("write %i %s %s" % (address, data_type, data), recv=True)
+
+        elif data_type in [
+            "bool",
+            "boolean",
+            "uint8_t",
+            "int8_t",
+            "uint16_t",
+            "int16_t",
+            "uint32_t",
+            "int32_t",
+        ]:
+            self.send_command("write %i %s %i" % (address, data_type, data), recv=True)
+
+        elif data_type in ["float"]:
+            self.send_command("write %i float %f" % (address, data), recv=True)
+
+        else:
+            raise ValueError("Input argument is invalid.")
+
+
+if __name__ == "__main__":
     pass
