@@ -965,10 +965,7 @@ class MPS:
             self.send_command("write %i %s %i" % (address, data_type, data), recv=True)
 
         elif data_type in ["float"]:
-            data = int(
-                np.float32(data).view(np.uint32)
-            )  # convert to 4 bytes then to uint32_t to store data in EEPROM
-            self.send_command("write %i 'uint32_t' %i" % (address, data), recv=True)
+            self.send_command("write %i float %f" % (address, data), recv=True)
 
         else:
             raise ValueError("Input argument is invalid.")
