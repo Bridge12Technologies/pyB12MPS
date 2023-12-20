@@ -900,7 +900,6 @@ class MPS:
             CalibrationReading = int(CalibrationReadingString)
             return CalibrationReading
 
-
     def interpgain(self):
         """Query the intepolated gain offset in dBm from calibration data
 
@@ -915,6 +914,61 @@ class MPS:
         return_interpgain_tenth_dbm = self.send_command("interpgain?", recv=True)
         interpGain = float(return_interpgain_tenth_dbm) / 10.0  # convert to mV
         return interpGain
+
+    def readeeprom(self, address, data_type):
+        """
+        Read data with specific data type to the given address
+
+        Args:
+            address (int): the address in the EEPROM
+            data_type (str): the data type stored in the EEPROM at the given address
+
+        Returns:
+            data (str): The read data from EEPROM
+
+        Example::
+
+            data = readeeprom(16, 'char') # Query the MPS Header that stored in the address 16.
+        """
+
+        return_data = self.send_command("read %i %s" % (address, data_type), recv=True)
+
+        return return_data
+
+    def writeeeprom(self, address, data_type, data):
+        """
+        Write data with specific data type to the given address.
+
+        Args:
+            address (int): the address in the EEPROM
+            data_type (str): the data type stored in the EEPROM at the given address
+            data (int, str): the data written to the EEPROM
+
+        Example::
+
+            writeeeprom(64, 'uint32_t', 9000000) # Set the minimum frequency to eeprom at address 64.
+        """
+
+        if data_type in ["char"]:
+            self.send_command("write %i %s %s" % (address, data_type, data), recv=True)
+
+        elif data_type in [
+            "bool",
+            "boolean",
+            "uint8_t",
+            "int8_t",
+            "uint16_t",
+            "int16_t",
+            "uint32_t",
+            "int32_t",
+        ]:
+            self.send_command("write %i %s %i" % (address, data_type, data), recv=True)
+
+        elif data_type in ["float"]:
+            self.send_command("write %i %s %f" % (address, data_type, data), recv=True)
+
+        else:
+            raise ValueError("Input argument is invalid.")
 
 
 if __name__ == "__main__":
