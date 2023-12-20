@@ -958,8 +958,10 @@ class MPS:
             for c in data_type:
                 if c.isdigit():
                     bit += c
-
-            data += 2 ** int(bit)
+            
+            if data < 0:
+                data += 2 ** int(bit)
+                
             data_type = "u" + data_type
 
         if data_type in ["char"]:
