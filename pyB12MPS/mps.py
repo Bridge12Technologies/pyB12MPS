@@ -28,6 +28,24 @@ class MPS:
         time.sleep(1)
         self.flush()
 
+    def timeout(self, timeout = None):
+        """
+        Set timeout of serial communication
+
+        Args:
+            timeout (None, int, float), timeout in second
+
+        Returns:
+            float: if timeout is None, returns the timeout value in second
+        """
+
+        if timeout is None:
+            return self.ser.timeout
+
+        else:
+            self.ser.timeout = timeout        
+            return 
+
     def ampgain(self, gain=None):
         """Advanced feature to adjust gain for calibration of MPS
 
@@ -639,7 +657,7 @@ class MPS:
         """
 
         if screenState is not None:
-            if screenState in (0, 1, 2):
+            if screenState in (0, 1, 2, 3, 4):
                 self.send_command("screen %i" % screenState)
             else:
                 raise ValueError("Screen Status is not Valid")
@@ -682,9 +700,12 @@ class MPS:
         # read bytes from MPS
         if recv == True:
             from_mps_bytes = self.ser.readline()
-            from_mps_string = from_mps_bytes.decode("utf-8").rstrip()
-
-            return from_mps_string
+            try:
+                from_mps_string = from_mps_bytes.decode("utf-8").rstrip()
+                return from_mps_string
+            except:
+                print('Warning: the decode is not working appropriately.')
+                return from_mps_bytes
 
     def serialNumber(self):
         """Query serial number of MPS
@@ -850,20 +871,20 @@ class MPS:
             wgStatusReading = int(wgStatusReadingString)
             return wgStatusReading
 
-    def __del__(self):  # If mps object is deleted
-        if (
-            self.ser.is_open
-        ):  # In case mps object is deleted but was not closed beforehand
-            # Turn everything off and close the connection (does NOT replace properly closing everything in your script)
-            self.lockstatus(0)  # Turn off the MPS frequency softlock
-            time.sleep(0.1)
-            self.power(-99)  # Set MW power to 0
-            time.sleep(0.1)
-            self.rfstatus(0)  # Turn off MW
-            time.sleep(0.1)
-            self.wgstatus(0)  # Switch to EPR mode
-            time.sleep(0.1)
-            self.close()  # Closes the serial port
+    # def __del__(self):  # If mps object is deleted
+    #     if (
+    #         self.ser.is_open
+    #     ):  # In case mps object is deleted but was not closed beforehand
+    #         # Turn everything off and close the connection (does NOT replace properly closing everything in your script)
+    #         self.lockstatus(0)  # Turn off the MPS frequency softlock
+    #         time.sleep(0.1)
+    #         self.power(-99)  # Set MW power to 0
+    #         time.sleep(0.1)
+    #         self.rfstatus(0)  # Turn off MW
+    #         time.sleep(0.1)
+    #         self.wgstatus(0)  # Switch to EPR mode
+    #         time.sleep(0.1)
+    #         self.close()  # Closes the serial port
 
     def calibration(self, calibration=None):
         """Set/Query the calibration mode status
@@ -931,8 +952,8 @@ class MPS:
             data = readeeprom(16, 'char') # Query the MPS Header that stored in the address 16.
         """
 
-        return_data = self.send_command("read %i %s" % (address, data_type), recv=True)
-
+        return_data = self.send_command("read %s %s" %(address, data_type), recv=True)
+    
         return return_data
 
     def writeeeprom(self, address, data_type, data):
